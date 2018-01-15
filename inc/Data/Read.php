@@ -28,7 +28,37 @@ class Read extends BaseController {
     }
 
     function read_users_file($file) {
-             
+
+        if(file_exists($file)):
+            $output ="<table class='table-bordered table-hover table-responsive'>\n\n";
+            $output .= "<thead>\n\n";
+            $output .= "<tr>\n\n";
+            $output .= "<th > Username</th>";
+            $output .= "<th> Email</th>";
+            $output .= "<th> First Name</th> ";
+            $output .= "<th> Last Name</th>";
+            $output .= "<th > Role</th> ";
+
+            $output .= "</tr>\n\n";
+            $output .= "</thead>\n\n";
+            $output .= "<tbody> \n";
+            $f = fopen($file, "r");
+            while (($line = fgetcsv($f)) !== false) {
+                $output .= "<tr>\n";
+                foreach ($line as $cell) {
+                    $output .= "<td>" . htmlspecialchars($cell) . "</td>";
+                }
+                $output .= "</tr>\n";
+            }
+            fclose($f);
+            $output .= "</tbody> \n ";
+            $output .= "\n</table>";
+
+            return $output;
+        else :
+            $output = "Couldn't find the file!";
+            return $output;
+        endif;
     }
     function read_prices_file ($file) {
         //  echo $this->file;

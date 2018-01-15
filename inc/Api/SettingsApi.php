@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Inc\Api;
 
@@ -12,18 +12,18 @@ class SettingsApi
     // fields
     public $settings = array();
     public $sections = array();
-	public $fields = array();
-	
+    public $fields = array();
+
 
     public function register()
     {
-        if(!empty($this->admin_pages)) {
+        if (!empty($this->admin_pages)) {
 
-            add_action( 'admin_menu', array($this, 'add_menu_pages'));
+            add_action('admin_menu', array($this, 'add_menu_pages'));
         }
-        if ( !empty($this->settings) ) {
-			add_action( 'admin_init', array( $this, 'registerCustomFields' ) );
-		}
+        if (!empty($this->settings)) {
+            add_action('admin_init', array($this, 'registerCustomFields'));
+        }
 
     }
 
@@ -32,48 +32,50 @@ class SettingsApi
     *- 1- add menu pages (and subpages)
     *- 2- add pages functio + add subpages function + withsubpage function
     */
-    public function add_pages(array $pages) 
+    public function add_pages(array $pages)
     {
         $this->admin_pages = $pages;
 
         return $this;
 
     }
-    public function addSubPages( array $pages )
-	{
-		$this->admin_subpages = array_merge( $this->admin_subpages, $pages );
 
-		return $this;
-	}
+    public function addSubPages(array $pages)
+    {
+        $this->admin_subpages = array_merge($this->admin_subpages, $pages);
 
-    public function withSubPage( string $title = null ) 
-	{
-		if ( empty($this->admin_pages) ) {
-			return $this;
-		}
+        return $this;
+    }
 
-		$admin_page = $this->admin_pages[0];
+    public function withSubPage(string $title = null)
+    {
+        if (empty($this->admin_pages)) {
+            return $this;
+        }
 
-		$subpage = array(
-			array(
-				'parent_slug' => $admin_page['menu_slug'], 
-				'page_title' => $admin_page['page_title'], 
-				'menu_title' => ($title) ? $title : $admin_page['menu_title'], 
-				'capability' => $admin_page['capability'], 
-				'menu_slug' => $admin_page['menu_slug'], 
-				'callback' => $admin_page['callback']
-			)
-		);
+        $admin_page = $this->admin_pages[0];
 
-		$this->admin_subpages = $subpage;
+        $subpage = array(
+            array(
+                'parent_slug' => $admin_page['menu_slug'],
+                'page_title' => $admin_page['page_title'],
+                'menu_title' => ($title) ? $title : $admin_page['menu_title'],
+                'capability' => $admin_page['capability'],
+                'menu_slug' => $admin_page['menu_slug'],
+                'callback' => $admin_page['callback']
+            )
+        );
 
-		return $this;
-	}
+        $this->admin_subpages = $subpage;
+
+        return $this;
+    }
 
 
-    public function add_menu_pages() {
-        foreach ( $this->admin_pages as $page ) {
-			add_menu_page(
+    public function add_menu_pages()
+    {
+        foreach ($this->admin_pages as $page) {
+            add_menu_page(
 
                 $page['page_title'],
                 $page['menu_title'],
@@ -81,19 +83,19 @@ class SettingsApi
                 $page['menu_slug'],
                 $page['callback'],
                 $page['icon_url'],
-                $page['position'] );
-		}
+                $page['position']);
+        }
 
-		foreach ( $this->admin_subpages as $page ) {
-			add_submenu_page(
+        foreach ($this->admin_subpages as $page) {
+            add_submenu_page(
 
                 $page['parent_slug'],
                 $page['page_title'],
                 $page['menu_title'],
                 $page['capability'],
                 $page['menu_slug'],
-                $page['callback'] );
-		}
+                $page['callback']);
+        }
     }
 
     /*
@@ -102,44 +104,55 @@ class SettingsApi
     * 2- add settings section
     * 3- add settings field
     */
-    public function setSettings( array $settings )
-	{
-		$this->settings = $settings;
+    public function setSettings(array $settings)
+    {
+        $this->settings = $settings;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function setSections( array $sections )
-	{
-		$this->sections = $sections;
+    public function setSections(array $sections)
+    {
+        $this->sections = $sections;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function setFields( array $fields )
-	{
-		$this->fields = $fields;
+    public function setFields(array $fields)
+    {
+        $this->fields = $fields;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function registerCustomFields()
-	{
-		// register setting
-		foreach ( $this->settings as $setting ) {
-			register_setting( $setting["option_group"], $setting["option_name"], ( isset( $setting["callback"] ) ? $setting["callback"] : '' ) );
-		}
+    public function registerCustomFields()
+    {
+        // register setting
+        foreach ($this->settings as $setting) {
+            register_setting(
+                $setting["option_group"],
+                $setting["option_name"],
+                (isset($setting["callback"]) ? $setting["callback"] : ''));
+        }
 
-		// add settings section
-		foreach ( $this->sections as $section ) {
-			add_settings_section( $section["id"], $section["title"], ( isset( $section["callback"] ) ? $section["callback"] : '' ), $section["page"] );
-		}
+        // add settings section
+        foreach ($this->sections as $section) {
+            add_settings_section(
+                $section["id"],
+                $section["title"],
+                (isset($section["callback"]) ? $section["callback"] : ''),
+                $section["page"]);
+        }
 
-		// add settings field
-		foreach ( $this->fields as $field ) {
-			add_settings_field( $field["id"], $field["title"], ( isset( $field["callback"] ) ? $field["callback"] : '' ), $field["page"], $field["section"], ( isset( $field["args"] ) ? $field["args"] : '' ) );
-		}
-	}
+        // add settings field
+        foreach ($this->fields as $field) {
+            add_settings_field($field["id"],
+                $field["title"],
+                (isset($field["callback"]) ? $field["callback"] : ''),
+                $field["page"], $field["section"],
+                (isset($field["args"]) ? $field["args"] : ''));
+        }
+    }
 
-    
+
 }

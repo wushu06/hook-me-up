@@ -53,7 +53,7 @@ class Admin extends BaseController {
                     'capability' => 'manage_options', 
                     'menu_slug' => 'hmu_plugin', 
                     'callback' => array( $this->admin_callbacks, 'hmu_plugin' ), 
-                    'icon_url' => $this->plugin_url.'assets/images/crane.png',
+                    'icon_url' => $this->plugin_url.'assets/images/hook.png',
                     'position' => 110
                 )
             );

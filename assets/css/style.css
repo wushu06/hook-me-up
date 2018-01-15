@@ -164,13 +164,13 @@ ul.tabs li{
 }
 
 ul.tabs li.current{
-    background: #ededed;
+    background: #fff;
     color: #222;
 }
 
 .tab-content{
     display: none;
-    background: #ededed;
+    background: #fff;
     padding: 15px;
 }
 

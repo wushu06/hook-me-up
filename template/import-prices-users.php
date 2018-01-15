@@ -134,7 +134,26 @@ use \Inc\Base\BaseController;
               //$file = $this->plugin_path.'price.csv';
                $file = $read->upload_csv_file();
                echo $insert_users->handle_csv($file);
-               echo $read->read_prices_file($file);              
+               echo $read->read_prices_file($file);
+               $option = get_option ('hmu_plugin_dashboard');
+               $send_email = $option["activate_email"];
+
+               if($send_email == true) {
+                   if ($insert_users->data_check  == true ){
+                       $to = get_bloginfo('admin_email');
+                       $subject = get_bloginfo('name').' Users Update';
+                       $message = 'new users have been added / updated';
+                       $headers[] = 'From: '.get_bloginfo('name').' <'.$to.'>'; // 'From: Alex <me@alecaddd.com>'
+                       // $headers[] = 'Content-Type: text/html: charset=UTF-8';
+                       $attachments = $file;
+                       wp_mail($to, $subject, $message, $headers, $attachments);
+
+                       echo '<h3>Email has been sent</h3>';
+
+
+                   }
+               }
+
                
 
 
