@@ -53,7 +53,7 @@ class InsertUser extends BaseController
                 $last_name = $slice[3];
                 $role = $slice[4];
 
-                $reault_array = $this->insert_update_user($username, $email, $password = NULL, $first_name, $last_name, $role);
+                return $reault_array = $this->insert_update_user($username, $email, $password = NULL, $first_name, $last_name, $role);
 
                    // echo $reault_array['msg'];
                     //echo ($reault_array['check'] == true ? 'Send Email' : 'dont send email');

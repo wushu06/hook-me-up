@@ -8,16 +8,16 @@ class Read extends BaseController {
 
     //public $file;
     // function to install csv data
-    function upload_csv_file(){
+    function upload_csv_file($FILE_POST){
 
             // Check if file was uploaded without errors
                // $allowed = array("jpg" => "image/jpg");
-                $filename = $_FILES["file_users"]["name"];
-                $filetype = $_FILES["file_users"]["type"];
-                $filesize = $_FILES["file_users"]["size"];
-                    $newFilename = time() .'_'. $_FILES["file_users"]["name"];
-                    $location = $this->plugin_path.'upload/'. $newFilename;
-                move_uploaded_file($_FILES["file_users"]["tmp_name"], $location);
+                $filename = $FILE_POST["name"];
+                $filetype = $FILE_POST["type"];
+                $filesize = $FILE_POST["size"];
+                    $newFilename = time() .'_'. $FILE_POST["name"];
+                 $location = $this->plugin_path.'upload/'. $newFilename;
+                move_uploaded_file($FILE_POST["tmp_name"], $location);
                     //echo "Your file was uploaded successfully.";
                                
 

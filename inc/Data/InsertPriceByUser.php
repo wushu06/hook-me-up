@@ -6,13 +6,16 @@ use \Inc\Base\BaseController;
 
 class InsertPriceByUser extends BaseController {
 
-    function insert_update_by_user(){
+    public $data_check = false;
+
+    function insert_update_by_user($file){
         global $wpdb;
         $wdm_user_product_price_mapping  = $wpdb->prefix . 'wusp_user_pricing_mapping';
         $wdm_users                       = $wpdb->prefix . 'users';
         $fetched_users = array();
 
-        $csv_file                        = $this->plugin_url.'user_price.csv';
+       // $csv_file                        = $this->plugin_url.'user_price.csv';
+        $csv_file = $file;
 
         //for checking headers
         // $requiredHeaders                 = array( 'Product id', 'User', 'Price' );
@@ -26,6 +29,7 @@ class InsertPriceByUser extends BaseController {
         //check the headers of file
         if ($foundHeaders !== $requiredHeaders) {
             echo 'File Header not the same';
+            $this->data_check = false;
             die();
         }
         $getfile = fopen($csv_file, 'r');
@@ -49,7 +53,7 @@ class InsertPriceByUser extends BaseController {
                 $discount_price         = $slice[ 4 ];
 
                 $status = null;
-                $product = get_product($product_id);
+                $product = wc_get_product($product_id);
 
                 // cspPrintDebug($product);
                 //check all values valid or not
@@ -63,7 +67,8 @@ class InsertPriceByUser extends BaseController {
                         $get_user_id = $fetched_users[$user];
 
                         if ($get_user_id == null) {
-                            $status = __('User does not exist', 'customer-specific-pricing-lite');
+                            $this->data_check = false;
+                            $msg = __('User does not exist', 'customer-specific-pricing-lite');
                         } else {
 
                             //Update price for existing one
@@ -90,9 +95,11 @@ class InsertPriceByUser extends BaseController {
                                         '%d')
                                 );
                                 if ($update_price == 0) {
-                                    $status = __('Record already exists', 'customer-specific-pricing-lite');
+                                    $this->data_check = false;
+                                    $msg = __('Record already exists', 'customer-specific-pricing-lite');
                                 } else {
-                                    $status = __('Record Updated', 'customer-specific-pricing-lite');
+                                    $this->data_check = true;
+                                    $msg = __('Record Updated', 'customer-specific-pricing-lite');
                                     $update_cnt ++;
                                 }
                             } else {
@@ -113,25 +120,29 @@ class InsertPriceByUser extends BaseController {
                                         '%d',
                                     )
                                 )) {
-                                    $status = __('Record Inserted', 'customer-specific-pricing-lite');
+                                    $this->data_check = true;
+                                    $msg = __('Record Inserted', 'customer-specific-pricing-lite');
                                     $insert_cnt ++;
                                 } else {
-                                    $status = __('Record could not be inserted', 'customer-specific-pricing-lite');
+                                    $this->data_check = false;
+                                    $msg = __('Record could not be inserted', 'customer-specific-pricing-lite');
                                 }
                             }
                         }
                     } else {
-                        $status = __('Either Product does not exist or not supported', 'customer-specific-pricing-lite');
+                        $this->data_check = false;
+                        $msg = __('Either Product does not exist or not supported', 'customer-specific-pricing-lite');
                     }
                 } else {
-                    $status = __('Invalid field values', 'customer-specific-pricing-lite');
+                    $this->data_check = false;
+                    $msg = __('Invalid field values', 'customer-specific-pricing-lite');
                 }
                 //display status message
             }//end of while
             // $ruleManager->setUnusedRulesAsInactive();
             //display summary
         }
-        return $status;
+        return $result = array('msg'=>$msg, 'check'=>$this->data_check);
 
 
 

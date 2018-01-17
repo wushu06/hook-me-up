@@ -12,8 +12,8 @@ class Enqueue extends BaseController {
 
     function enqueue () {
         // enqueue all our scripts
-        wp_enqueue_style( 'myplugin', $this->plugin_url. 'assets/css/style.css', array(), null, 'screen' );
-        wp_enqueue_script( 'myplugin', $this->plugin_url. 'assets/js/app.js', array(), null, true );
+        wp_enqueue_style( 'mystyle', $this->plugin_url. 'assets/css/style.css', array(), null, 'screen' );
+        wp_enqueue_script( 'myscript', $this->plugin_url. 'assets/js/app.js', array(), null, true );
         wp_enqueue_media();
     }
 }
