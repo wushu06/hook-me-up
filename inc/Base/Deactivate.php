@@ -15,6 +15,12 @@ class Deactivate  {
             remove_role( $slug, $role );
         }
 
+        wp_clear_scheduled_hook( 'my_activation_cron' );
+       /* $option  = get_option ('hmu_plugin');
+        $option['cron_time'] ='';
+        $option['cron_name'] ='';
+        update_option('hmu_plugin', $option['cron_time']);
+        update_option('hmu_plugin', $option['cron_name']);*/
 
 
 

@@ -4,10 +4,10 @@
 
 
 <form method="post" class="hmu-general-form" action="options.php">
-<?php 
-    settings_fields( 'hmu__dashboard_options_group' );
+<?php
+    settings_fields( 'hmu_dashboard_options_group' );
     do_settings_sections( 'hmu_plugin' );
-    submit_button( 'Upload Users', 'primary', 'btnSubmit' ); 
+    submit_button( 'Save Settings', 'primary', 'btnSubmit' );
 ?>
 
 </form>

@@ -19,13 +19,13 @@ class Activate {
 
         global $wp_roles;
 
-        $roles_to_remove = array('subscriber', 'contributor', 'author', 'editor','shop_manager');
+       /* $roles_to_remove = array('subscriber', 'contributor', 'author', 'editor','shop_manager');
 
         foreach ($roles_to_remove as $role) {
             if (isset($wp_roles->roles[$role])) {
                 $wp_roles->remove_role($role);
             }
-        }
+        }*/
 
 
         if ( get_option( 'hmu_plugin' ) ) {
@@ -38,9 +38,8 @@ class Activate {
 
 
 
-
-
         flush_rewrite_rules();
 
     }
+
 }

@@ -81,17 +81,28 @@ class Admin extends BaseController {
     */
 	public function setSettings()
 	{
+        /*
+         * # for each page create group of fields and give each group option name
+         * #
+         */
+
+
 		$args = array(
 			array(
-				'option_group' => 'hmu_options_group',
-				'option_name' => 'hmu_plugin',
-				'callback' => array( $this->fields_callbacks, 'inputSanitize' )
+				'option_group' => 'hmu_dashboard_options_group',
+				'option_name' => 'hmu_dashboard',
+				//'callback' => array( $this->fields_callbacks,'sanitizeCallback' )
 			),
-			array(
-				'option_group' => 'hmu__dashboard_options_group',
-				'option_name' => 'hmu_plugin_dashboard',
-				'callback' => array( $this->fields_callbacks, 'checkboxSanitize' )
-			)
+            array(
+                'option_group' => 'hmu_import_options_group',
+                'option_name' => 'hmu_import',
+                'callback' => array( $this->fields_callbacks, 'sanitizeCallback' )
+            ),
+            array(
+                'option_group' => 'hmu_cron_options_group',
+                'option_name' => 'hmu_cron',
+                //'callback' => array( $this->fields_callbacks, 'sanitizeCallback' )
+            )
 			
 		);
 	
@@ -103,18 +114,24 @@ class Admin extends BaseController {
 	public function setSections()
 	{
 		$args = array(
+            array(
+                'id' => 'hmu_dashboard_index',
+                'title' => 'Dashboard',
+                'callback' => array( $this->fields_callbacks, 'dashboardSectionManager' ),
+                'page' => 'hmu_plugin' //dahboard page
+            ),
 			array(
-				'id' => 'hmu_admin_index',
-				'title' => 'Settings',
+				'id' => 'hmu_import_index',
+				'title' => 'Upload Settings',
 				'callback' => array( $this->fields_callbacks, 'adminSectionManager' ),
 				'page' => 'import_users'
 			),
-			array(
-				'id' => 'hmu_dashboard_index',
-				'title' => 'Dashboard',
-				'callback' => array( $this->fields_callbacks, 'dashboardSectionManager' ),
-				'page' => 'hmu_plugin' //dahboard page
-			)
+           array(
+                'id' => 'hmu_cron_index',
+                'title' => 'Cron Tasks',
+                'callback' => array( $this->fields_callbacks, 'cronSectionManager' ),
+                'page' => 'cron_task'
+            )
 		);
 
 		$this->settings->setSections( $args );
@@ -124,7 +141,7 @@ class Admin extends BaseController {
 	{
 		$args = array ();
 
-		foreach ($this->fieldsOutput as $id => $title_callback ) {
+		/*foreach ($this->fieldsOutput as $id => $title_callback ) {
 
 			$args[] = array (
 				'id' => $id,
@@ -138,17 +155,18 @@ class Admin extends BaseController {
 						'class' => 'hmu-upload'
 					)
 				);
-		}
+		}*/
+
 		foreach ($this->dahboardFields   as $id_dash => $dashtitle_callback ) {
 			
 			$args[] = array (
 				'id' => $id_dash,
 				'title' => $dashtitle_callback[0],
 				'callback' => array( $this->fields_callbacks, $dashtitle_callback[1] ),
-				'page' => 'hmu_plugin',
-				'section' => 'hmu_dashboard_index',
+				'page' => $dashtitle_callback[2],
+				'section' => $dashtitle_callback[3],
 					'args' => array(
-						'option_name' => 'hmu_plugin_dashboard',
+						'option_name' => $dashtitle_callback[4],
 						'label_for' => $id_dash,
 						'class' => 'hmu-upload'
 					)

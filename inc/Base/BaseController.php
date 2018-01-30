@@ -14,6 +14,7 @@ class BaseController
 
 	public $dahboardFields = array();
 	public $fieldsOutput = array();
+
 	
 	
 	
@@ -35,31 +36,60 @@ class BaseController
 		/* 
 		* FIELDS
 		*/
+        $op = array('hmu_plugin'=>'activate_cron');
 
 		$this->dahboardFields = array (
-			'activate_email' => 
-				array('Activate Email ', 'emailActivationField'),
+		    // ID
+            //0- title 1- callback 2-page 3- section 4- option name 5-input type
+
 			'activate_cron' => 
-				array('Activate Cron ', 'cronActivationField'),
+				array('Activate Cron ',
+                    'cronActivationField',
+                    'hmu_plugin',
+                    'hmu_dashboard_index',
+                    'hmu_dashboard',
+                    'boolean'
+                ),
+            'activate_email' =>
+                array('Activate Email ', 'emailActivationField','hmu_plugin','hmu_dashboard_index','hmu_dashboard','boolean'),
+            'upload_file' =>
+                array('Upload File',
+                    'inputUploadField',
+                    'import_users',
+                    'hmu_import_index',
+                    'hmu_import',
+                    'string'
+                ),
+            'profile_picture' =>
+                array('Profile Picture', 'profilePictureField','import_users','hmu_import_index','hmu_import','string'),
+            'cron_time' =>
+                array('Cron Time ', 'cronTimeField','cron_task','hmu_cron_index','hmu_cron','string'),
+            'cron_name' =>
+                array('Cron Name ', 'cronNameField','cron_task','hmu_cron_index','hmu_cron','string'),
+
+
 			
 		);
-		$this->fieldsOutput = array (
-			'upload_file' => 
-				array('Upload File', 'inputUploadField'),
-			'profile_picture' => 
-				array('Profile Picture', 'profilePictureField'),
-		
-			
-		);
+
+
+
+
 		
 	}
 
-	public function activated(  string $option_name, string $key )
+	/*public function activated(   $option_name,  $key )
 	{
 		$option = get_option( $option_name );
 
 		return  $option[ $key ] == 1  ? true : false;
 	}
+
+	public function activated_string (   $option_name,  $key )
+    {
+        $option = get_option( $option_name );
+
+        return  $option[ $key ] !== ''  ? $option[ $key ] : '';
+    }*/
 
 	
 }

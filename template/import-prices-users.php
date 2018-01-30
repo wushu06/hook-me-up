@@ -36,6 +36,7 @@ use \Inc\Base\BaseController;
                 <li class="tab-link current" data-tab="tab-1">User Based Prices</li>
                 <li class="tab-link" data-tab="tab-2">Role Based Prices</li>
                 <li class="tab-link" data-tab="tab-3">Import Users</li>
+                <li class="tab-link" data-tab="tab-4">Import Products</li>
 
             </ul>
 
@@ -71,13 +72,21 @@ use \Inc\Base\BaseController;
                 </form>
             </div>
 
+            <div id="tab-4" class="tab-content">
+
+                <form action="" method="post" enctype="multipart/form-data">
+                    <label for="">Import Products:</label><br>
+                    <input type="file" name="file_products" id="fileToUpload">
+                    <input class="btn btn-primary" type="submit" value="Insert/Update Products" name="submit_products">
+                </form>
+            </div>
+
         </div><!-- container -->
 
 
         <?php
 
         use Inc\Data\Submit;
-
         $submit = new Submit();
 
 
@@ -110,9 +119,39 @@ use \Inc\Base\BaseController;
 
         }
 
+        if (isset($_POST["submit_products"]) && !empty($_FILES["file_products"]["name"]) ) {
+            echo '<h1>Products Uploaded:</h1>';
+            // $file = $this->plugin_path.'new.csv';
+             $FILE_POST = $_FILES["file_products"];
+             echo $submit->submit_data($FILE_POST, 'submit_products');
+
+
+        }
+
 
         ?>
     </div>
+
+<?php
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

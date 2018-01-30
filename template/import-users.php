@@ -5,23 +5,28 @@
 
 </h1>
 <div class="wrap">
-
 <?php settings_errors(); ?>
 
 <form method="post" class="hmu-general-form" action="options.php">
 	<?php 
-		settings_fields( 'hmu_options_group' );
+		settings_fields( 'hmu_import_options_group' );
 		do_settings_sections( 'import_users' );
 		submit_button( 'Upload Users', 'primary', 'btnSubmit' ); 
 	?>
 
 </form>
+    <?php echo get_option("hmu_import")["upload_file"]; ?>
 <?php
-$option = get_option ('hmu_plugin');
-$picture = $option["profile_picture"];
- ?>
-
+/*$option = get_option ('hmu_import');
+@$picture = $option["profile_picture"];
+ */?><!--
+<?php /*if ($picture !=='') : */?>
 <div id="profile-picture-preview" class="profile-picture" >
-<img src="<?php echo $picture; ?>" alt="">
+<img src="<?php /*echo $picture; */?>" alt="">
 </div>
-</div>
+    <?php /*endif; */?>
+</div>-->
+
+
+
+

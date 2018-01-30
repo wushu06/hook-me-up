@@ -8,31 +8,59 @@ use \Inc\Api\SettingsApi;
 
 class FieldsCallbacks extends BaseController {
 
-    public function checkboxSanitize( $input )
+    public function sanitizeCallback( $input )
 	{
 		// return filter_var($input, FILTER_SANITIZE_NUMBER_INT);
         //return ( isset($input) ? true : false );
         $output = array();
-        
-        foreach ($this->dahboardFields   as $id_dash => $dashtitle_callback ) {
-                $output[$id_dash] = isset( $input[$id_dash] ) ? true : false;
-            }
+
+        /*  foreach ($this->dahboardFields   as $id_dash => $dashtitle_callback ) {
+
+             /* if ($dashtitle_callback[5] == 'string' ) {
+                     if( isset( $input[$id_dash] ) ) {
+
+                         // Strip all HTML and PHP tags and properly handle quoted strings
+                         $output[$id_dash] = strip_tags( stripslashes( $input[ $id_dash ] ) );
+
+                     }
+                 }else if ($dashtitle_callback[5] == 'boolean' ){
+                     $output[$id_dash] = isset( $input[$id_dash] ) ? true : false;
+
+                 }
+
+             }*/
+
     
-            return $output;
+           // return $output;
+        foreach($_FILES['hum_import']['tmp_name'] as $key => $tmp_name)
+        {
+            $file_name = $key.$_FILES['hum_import']['name'][$key];
+            $urls = wp_handle_upload($key.$_FILES['hum_import']['name'][$key], array('test_form' => FALSE));
+            $temp = $urls["url"];
+            $input = $temp;
+        }
+//        if(!empty($_FILES["hmu_import['upload_file']"]["tmp_name"]))
+//        {
+//            $urls = wp_handle_upload($_FILES["hmu_import['upload_file']"], array('test_form' => FALSE));
+//            $temp = $urls["url"];
+//            return $temp;
+//        }
+
+        return $input;
     }
-    public function inputSanitize( $input )
+   /* public function inputSanitize( $input )
 	{
             // Create our array for storing the validated options
             $output = array();
             
         // Loop through each of the incoming options
-        foreach ($this->fieldsOutput as $id => $title_callback) {
+        foreach ($this->dahboardFields  as $id_dash => $title_callback) {
                 
             // Check to see if the current option has a value. If so, process it.
-            if( isset( $input[$id] ) ) {
+            if( isset( $input[$id_dash] ) ) {
                 
                 // Strip all HTML and PHP tags and properly handle quoted strings
-                $output[$id] = strip_tags( stripslashes( $input[ $id ] ) );
+                $output[$id_dash] = strip_tags( stripslashes( $input[ $id_dash ] ) );
                     
             } // end if
                 
@@ -41,7 +69,7 @@ class FieldsCallbacks extends BaseController {
         // Return the array processing any additional functions filtered by this action
         return $output;
 
-    }
+    }*/
 
 	public function adminSectionManager()
 	{
@@ -51,15 +79,20 @@ class FieldsCallbacks extends BaseController {
     {
         echo 'Dashboard Control';
     }
+    public function cronSectionManager ()
+    {
+
+    }
 
     public function inputUploadField( $args )
 	{
         $name = $args['label_for'];
 		$classes = $args['class'];
-        $option_name = $args['option_name'];
-        $value =  get_option( $option_name );
+         $option_name = $args['option_name'];
+        $value_upload =  get_option( $option_name );
+        echo $uploadvalue = isset($value_upload[$name]) ? $value_upload[$name]  : '';
         
-		echo '<input type="text" class="regular-text" name="'. $option_name.'['.$name.']"  value="' . $value[$name] . '" >';
+		echo '<input type="file"  name="' . $option_name . '[' . $name . ']" value="' . $option_name . '[' . $name . ']"  />';
     }
 
     function profilePictureField($args) {
@@ -83,10 +116,10 @@ class FieldsCallbacks extends BaseController {
 		$classes = $args['class'];
         $option_name = $args['option_name'];
         $checkbox = get_option( $option_name );
-        $checked = isset($checkbox[$name]) ? ($checkbox[$name] ? true : false) : false;
+        $checked_email = isset($checkbox[$name]) ? ($checkbox[$name] ? true : false) : false;
         
         echo '<div id="toggles">
-                <input id="checkboxEmail" class="ios-toggle" type="checkbox" name="' . $option_name . '[' . $name . ']" value="1"   ' . ($checked ? "checked": "") . '>
+                <input id="checkboxEmail" class="ios-toggle" type="checkbox" name="' . $option_name . '[' . $name . ']" value="1"   ' . ($checked_email  ? "checked": "") . '>
                 <label for="checkboxEmail" class="checkbox-label" data-off="off" data-on="on">
                 </label>';
     }
@@ -97,6 +130,7 @@ class FieldsCallbacks extends BaseController {
                 $option_name = $args['option_name'];
                 $checkbox = get_option( $option_name );
                 $checked = isset($checkbox[$name]) ? ($checkbox[$name] ? true : false) : false;
+
                 
                 echo '<div id="toggles">
                         <input id="checkboxCron" class="ios-toggle" type="checkbox" name="' . $option_name . '[' . $name . ']" value="1"   ' . ($checked ? "checked": "") . '>
@@ -104,6 +138,42 @@ class FieldsCallbacks extends BaseController {
                         </label>';
     }
 
+    function cronTimeField ($args) {
+       $name = $args['label_for'];
+        $classes = $args['class'];
+        $option_name = $args['option_name'];
+        $value =  get_option( $option_name );
+        $cron_value = isset($value[$name]) ? $value[$name]  : 'Select Time';
+
+
+        echo '
+         <select name="' . $option_name . '[' . $name . ']">
+            <option value="">'.$cron_value.'</option>
+            <option value="hourly">hourly</option>
+             <option value="twicedaily">twicedaily</option>
+            <option value="Daily">Daily</option>
+            
+           
+          </select><br>
+                       ';
+
+    }
+    function cronNameField ($args) {
+        $name = $args['label_for'];
+        $classes = $args['class'];
+        $option_name = $args['option_name'];
+        $value =  get_option( $option_name );
+        $isvalue = isset($value[$name]) ? $value[$name]  : '';
+
+            echo '<input type="text" class="regular-text" name="'. $option_name.'['.$name.']"  value="' . $isvalue . '"  placeholder="Name of the task">';
+        if($isvalue !=='') {
+           echo '<div class="cron-wrapper"><h4>Next Schdeduled Task: </h4>' . $isvalue . '<br><h4>Frequency: </h4>' . get_option("hmu_cron")["cron_time"];
+           echo '<br><a class="button delete-cron" href="#">Delete Task</a></div>';
+       }
+
+    }
+
 
     
 }
+?>

@@ -6,6 +6,7 @@ use Inc\Data\Read;
 use Inc\Data\InsertPriceByUser;
 use Inc\Data\InsertPriceByRole;
 use Inc\Data\InsertUser;
+use Inc\Data\InsertProducts;
 
 class Submit
 {
@@ -20,6 +21,7 @@ class Submit
         $insert_by_user = new InsertPriceByUser();
         $insert_by_role = new InsertPriceByRole();
         $insert_users = new InsertUser();
+        $insert_products = new InsertProducts();
 
 
         $file = $read->upload_csv_file($FILE_POST);
@@ -33,6 +35,9 @@ class Submit
          elseif( $POST == 'submit_users') :
              $output_array = $insert_users->handle_csv($file);
              $output  = $read->read_users_file($file);
+        elseif( $POST == 'submit_products') :
+            $output_array = $insert_products->handle_csv($file);
+            $output  = $read->read_products_file($file);
          endif;
 
 
@@ -47,7 +52,8 @@ class Submit
     public function send_email ($file)
     {
         $insert_users = new InsertUser();
-        $option = get_option ('hmu_plugin_dashboard');
+        $insert_products = new InsertProducts();
+        $option = get_option ('hmu_dashboard');
         $send_email = $option["activate_email"];
 
 
@@ -64,7 +70,19 @@ class Submit
                 echo '<h3>Email has been sent</h3>';
 
 
+            }elseif ($insert_products->data_check  == true) {
+                $to = get_bloginfo('admin_email');
+                $subject = get_bloginfo('name').' Products Update';
+                $message = 'new products have been added / updated';
+                $headers[] = 'From: '.get_bloginfo('name').' <'.$to.'>'; // 'From: Alex <me@alecaddd.com>'
+                // $headers[] = 'Content-Type: text/html: charset=UTF-8';
+                $attachments = $file;
+                wp_mail($to, $subject, $message, $headers, $attachments);
+
+                echo '<h3>Email has been sent</h3>';
             }
+        }else {
+            echo '<h3>Email deactivated</h3>';
         }
 
 

@@ -6,10 +6,12 @@ final class Init {
 
     public static function get_services () {
         return [
+            Base\Cron::class,
             Pages\Admin::class,
             Base\Enqueue::class,
             Base\SettingsLinks::class,
             Data\Read::class
+
         ];
 
     }
