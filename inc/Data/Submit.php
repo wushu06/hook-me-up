@@ -22,6 +22,7 @@ class Submit
         $insert_by_role = new InsertPriceByRole();
         $insert_users = new InsertUser();
         $insert_products = new InsertProducts();
+	    $insert_locations = new InsertLocations();
 
 
         $file = $read->upload_csv_file($FILE_POST);
@@ -38,6 +39,9 @@ class Submit
         elseif( $POST == 'submit_products') :
             $output_array = $insert_products->handle_csv($file);
             $output  = $read->read_products_file($file);
+        elseif( $POST == 'submit_locations') :
+	        $output_array = $insert_locations->handle_csv($file);
+	        $output  = $read->read_locations_file($file);
          endif;
 
 

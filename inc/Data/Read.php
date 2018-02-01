@@ -17,7 +17,7 @@ class Read extends BaseController {
                 $filesize = $FILE_POST["size"];
                     $newFilename = time() .'_'. $FILE_POST["name"];
                  $location = $this->plugin_path.'upload/'. $newFilename;
-                move_uploaded_file($FILE_POST["tmp_name"], $location);
+                 move_uploaded_file($FILE_POST["tmp_name"], $location);
                     //echo "Your file was uploaded successfully.";
                                
 
@@ -131,4 +131,39 @@ class Read extends BaseController {
             return $output;
         endif;
     }
+
+	function read_locations_file($file) {
+
+		if(file_exists($file)):
+			$output ="<table class='table-bordered table-hover table-responsive'>\n\n";
+			$output .= "<thead>\n\n";
+			$output .= "<tr>\n\n";
+			$output .= "<th > User Location Name</th>";
+			$output .= "<th> User Postcode</th>";
+			$output .= "<th> User Address</th> ";
+			$output .= "<th> User City</th> ";
+			$output .= "<th> Country</th> ";
+
+
+			$output .= "</tr>\n\n";
+			$output .= "</thead>\n\n";
+			$output .= "<tbody> \n";
+			$f = fopen($file, "r");
+			while (($line = fgetcsv($f)) !== false) {
+				$output .= "<tr>\n";
+				foreach ($line as $cell) {
+					$output .= "<td>" . htmlspecialchars($cell) . "</td>";
+				}
+				$output .= "</tr>\n";
+			}
+			fclose($f);
+			$output .= "</tbody> \n ";
+			$output .= "\n</table>";
+
+			return $output;
+		else :
+			$output = "Couldn't find the file!";
+			return $output;
+		endif;
+	}
 }

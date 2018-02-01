@@ -37,6 +37,7 @@ use \Inc\Base\BaseController;
                 <li class="tab-link" data-tab="tab-2">Role Based Prices</li>
                 <li class="tab-link" data-tab="tab-3">Import Users</li>
                 <li class="tab-link" data-tab="tab-4">Import Products</li>
+                <li class="tab-link" data-tab="tab-5">Import Locations</li>
 
             </ul>
 
@@ -72,12 +73,22 @@ use \Inc\Base\BaseController;
                 </form>
             </div>
 
+
             <div id="tab-4" class="tab-content">
 
                 <form action="" method="post" enctype="multipart/form-data">
                     <label for="">Import Products:</label><br>
                     <input type="file" name="file_products" id="fileToUpload">
                     <input class="btn btn-primary" type="submit" value="Insert/Update Products" name="submit_products">
+                </form>
+            </div>
+
+            <div id="tab-5" class="tab-content">
+
+                <form action="" method="post" enctype="multipart/form-data">
+                    <label for="">Import Locations:</label><br>
+                    <input type="file" name="file_locations" id="fileToUpload">
+                    <input class="btn btn-primary" type="submit" value="Insert/Update Locations" name="submit_locations">
                 </form>
             </div>
 
@@ -124,6 +135,15 @@ use \Inc\Base\BaseController;
             // $file = $this->plugin_path.'new.csv';
              $FILE_POST = $_FILES["file_products"];
              echo $submit->submit_data($FILE_POST, 'submit_products');
+
+
+        }
+
+        if (isset($_POST["submit_locations"]) && !empty($_FILES["file_locations"]["name"]) ) {
+	        echo '<h1>Locations Uploaded:</h1>';
+	        // $file = $this->plugin_path.'new.csv';
+	        $FILE_POST = $_FILES["file_locations"];
+	        echo $submit->submit_data($FILE_POST, 'submit_locations');
 
 
         }
