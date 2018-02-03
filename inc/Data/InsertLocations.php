@@ -18,6 +18,7 @@ class InsertLocations
 		// $csv_file = $this->plugin_url.'users.csv';
 		$csv_file = $file;
 
+
 		//for checking headers
 		$requiredHeaders = array("location name","postcode","locaiton address","city","country");
 
@@ -28,8 +29,12 @@ class InsertLocations
 
 
 		//check the headers of file
-		if ($foundHeaders !== $requiredHeaders) {
-			echo 'File Header not the same';
+		if ($foundHeaders !== $requiredHeaders) {?>
+            <div class="notice notice-warning is-dismissible">
+                <p>File Header not the same</p>
+            </div>
+
+		<?php
 			die();
 		}
 		$getfile = fopen($csv_file, 'r');
@@ -65,47 +70,55 @@ class InsertLocations
 		}
 
 
+
+
 	}
 
 	function insert_update_locations($location_name, $location_postcode, $location_address, $location_city, $location_country)
 	{
+	    global  $wpdb;
+        $page = get_page_by_title($location_name, OBJECT, 'wpsl_stores');
+        if( null ==  $page  ) {
+            $post_id = wp_insert_post( array(
+                'post_title' =>  $location_name ,
+                'post_content' => '',
+                'post_status' => 'publish',
+                'post_type' => "wpsl_stores",
+            ) );
 
-		/*$post_id = wp_insert_post( array(
-			'post_title' =>  $location_name ,
-			'post_content' => '',
-			'post_status' => 'publish',
-			'post_type' => "wpsl_stores",
-		) );*/
+            if($post_id)
 
-		/*wp_set_object_terms( $post_id, 'simple', 'product_type' );
+                wp_set_object_terms( $post_id, 'cat-two', 'wpsl_store_category' );
+              //  wp_set_post_terms($post_id, wp_create_category('My Category'), 'category');
 
-		update_post_meta( $post_id, '_visibility', 'visible' );
-		update_post_meta( $post_id, '_stock_status', 'instock');
-		update_post_meta( $post_id, 'total_sales', '0' );
-		update_post_meta( $post_id, '_downloadable', 'no' );
-		update_post_meta( $post_id, '_virtual', 'yes' );
-		update_post_meta( $post_id, '_price',  '' );
-		update_post_meta( $post_id, '_regular_price',  '' );
-		update_post_meta( $post_id, '_sale_price', '' );
-		update_post_meta( $post_id, '_purchase_note', '' );
-		update_post_meta( $post_id, '_featured', 'no' );
-		update_post_meta( $post_id, '_weight', '' );
-		update_post_meta( $post_id, '_length', '' );
-		update_post_meta( $post_id, '_width', '' );
-		update_post_meta( $post_id, '_height', '' );
-		update_post_meta( $post_id, '_sku', '' );
-		update_post_meta( $post_id, '_product_attributes', array() );
-		update_post_meta( $post_id, '_sale_price_dates_from', '' );
-		update_post_meta( $post_id, '_sale_price_dates_to', '' );
-		update_post_meta( $post_id, '_price', '' );
-		update_post_meta( $post_id, '_sold_individually', '' );
-		update_post_meta( $post_id, '_manage_stock', 'no' );
-		update_post_meta( $post_id, '_backorders', 'no' );
-		update_post_meta( $post_id, '_stock', '' );*/
+                update_post_meta( $post_id , 'wpsl_zip', $location_postcode );
+                update_post_meta( $post_id , 'wpsl_address', $location_address );
+                update_post_meta( $post_id , 'wpsl_city', $location_city );
+                update_post_meta( $post_id , 'wpsl_country', $location_country );
 
 
-		$this->data_check = true;
-		echo 'it works';
+
+
+            $this->data_check = true;
+        } else {
+            echo 'This Post already exists '.$location_name.'<br />';
+            $my_post = array(
+                'ID'           =>  $page->ID,
+                'post_title'   => $location_name,
+
+            );
+            wp_update_post( $my_post );
+
+            wp_set_object_terms( $page->ID, 'cat-two', 'wpsl_store_category' );
+
+            update_post_meta( $page->ID , 'wpsl_zip', $location_postcode );
+            update_post_meta( $page->ID , 'wpsl_address', $location_address );
+            update_post_meta( $page->ID , 'wpsl_city', $location_city );
+            update_post_meta( $page->ID , 'wpsl_country', $location_country );
+        } // end if
+
+
+
 
 
 	}

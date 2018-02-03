@@ -85,7 +85,7 @@ use \Inc\Base\BaseController;
 
             <div id="tab-5" class="tab-content">
 
-                <form action="" method="post" enctype="multipart/form-data">
+                <form action=""  id="importTable" method="post" enctype="multipart/form-data">
                     <label for="">Import Locations:</label><br>
                     <input type="file" name="file_locations" id="fileToUpload">
                     <input class="btn btn-primary" type="submit" value="Insert/Update Locations" name="submit_locations">
@@ -110,10 +110,11 @@ use \Inc\Base\BaseController;
 
         }
 
-        if (isset($_POST["submit_prices_role"]) && !empty($_FILES["file_price_role"]["name"])) {
-
-
-            echo '<h1>Upload Prices By Role</h1>';
+        if (isset($_POST["submit_prices_role"]) && !empty($_FILES["file_price_role"]["name"])) {?>
+            <div class="notice notice-success is-dismissible">
+                <h1>Prices Uploaded:</h1>
+            </div>
+            <?php
             //  echo    $csv_file                        = $this->plugin_url.'user_price.csv';
             //$file = $this->plugin_path.'price.csv';
             $FILE_POST = $_FILES["file_price_role"];
@@ -121,17 +122,22 @@ use \Inc\Base\BaseController;
         }
 
 
-        if (isset($_POST["submit_users"]) && !empty($_FILES["file_users"]["name"])) {
-            echo '<h1>Users Uploaded:</h1>';
-            //$file = $this->plugin_path.'price.csv';
+        if (isset($_POST["submit_users"]) && !empty($_FILES["file_users"]["name"])) {?>
+            <div class="notice notice-success is-dismissible">
+                <h1>Users Uploaded:</h1>
+            </div>
+            <?php
             $FILE_POST = $_FILES["file_users"];
             echo $submit->submit_data($FILE_POST, 'submit_users');
 
 
         }
 
-        if (isset($_POST["submit_products"]) && !empty($_FILES["file_products"]["name"]) ) {
-            echo '<h1>Products Uploaded:</h1>';
+        if (isset($_POST["submit_products"]) && !empty($_FILES["file_products"]["name"]) ) {?>
+            <div class="notice notice-success is-dismissible">
+                <h1>Products Uploaded:</h1>
+            </div>
+            <?php
             // $file = $this->plugin_path.'new.csv';
              $FILE_POST = $_FILES["file_products"];
              echo $submit->submit_data($FILE_POST, 'submit_products');
@@ -139,9 +145,11 @@ use \Inc\Base\BaseController;
 
         }
 
-        if (isset($_POST["submit_locations"]) && !empty($_FILES["file_locations"]["name"]) ) {
-	        echo '<h1>Locations Uploaded:</h1>';
-	        // $file = $this->plugin_path.'new.csv';
+        if (isset($_POST["submit_locations"]) && !empty($_FILES["file_locations"]["name"]) ) {?>
+            <div class="notice notice-success is-dismissible">
+                <h1>Locations Uploaded:</h1>
+            </div>
+            <?php
 	        $FILE_POST = $_FILES["file_locations"];
 	        echo $submit->submit_data($FILE_POST, 'submit_locations');
 

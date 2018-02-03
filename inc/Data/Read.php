@@ -17,6 +17,36 @@ class Read extends BaseController {
                 $filesize = $FILE_POST["size"];
                     $newFilename = time() .'_'. $FILE_POST["name"];
                  $location = $this->plugin_path.'upload/'. $newFilename;
+        //$filetype = wp_check_filetype( basename( $FILE_POST["tmp_name"] ), array('csv' => 'text/csv') );
+        $mimes = array('application/vnd.ms-excel','text/plain','text/csv','text/tsv');
+
+        if(!in_array($filetype,$mimes)):?>
+            <div class="notice notice-error is-dismissible">
+                <p>File must be a CSV.</p>
+            </div>
+            <?php
+
+            exit();
+
+        endif;
+        if($filesize == 0):?>
+            <div class="notice notice-error is-dismissible">
+                <p>File is empty.</p>
+            </div>
+
+
+
+
+
+            <div class="notice notice-info is-dismissible">
+                <p>This is some information.</p>
+            </div>
+            <?php
+            exit();
+
+        endif;
+
+
                  move_uploaded_file($FILE_POST["tmp_name"], $location);
                     //echo "Your file was uploaded successfully.";
                                
@@ -166,4 +196,5 @@ class Read extends BaseController {
 			return $output;
 		endif;
 	}
+
 }

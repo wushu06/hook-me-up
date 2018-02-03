@@ -43,13 +43,37 @@ jQuery(document).ready( function($){
     });
 
     $('#remove-picture').on('click',function(e){
-        e.preventDefault();
-        var answer = confirm("Are you sure you want to remove your Profile Picture?");
-        if( answer == true ){
-            $('#profile-picture').val('');
-            $('.hmu-general-form').submit();
-        }
-        return;
+
     });
 
+
+
 });
+jQuery(document).ready( function($){
+    function showDataTable(){
+
+        $.ajax({
+            type: 'POST',
+            url: ajaxurl,
+            data: {
+                action: 'save_sort'
+
+            },
+            error: function( error ) {
+                console.log('ERROr');
+            },
+            success:function(data){
+
+               console.log('suc'+data);
+            }
+        });
+
+    }
+
+    $('#importTable').on('submit', function(e){
+        e.preventDefault();
+        showDataTable()
+    });
+});
+
+
