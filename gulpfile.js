@@ -51,13 +51,13 @@ gulp.task( 'css', function() {
 
 gulp.task( 'js', function() {
     gulp.src(jsSRC)
-        .pipe(minify({
+        /*.pipe(minify({
             ext:{
                 src:'-debug.js',
                 min:'.js'
             },
             exclude: ['tasks'],
-        }))
+        }))*/
         .pipe( gulp.dest( jsDIST ) );
 });
 

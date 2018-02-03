@@ -10,7 +10,8 @@ final class Init {
             Pages\Admin::class,
             Base\Enqueue::class,
             Base\SettingsLinks::class,
-            Data\Read::class
+            Data\Read::class,
+            Data\UploadFile::class
 
         ];
 

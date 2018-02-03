@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Hook Me Up 
+Plugin Name: Hook Me Up
 Plugin URI:  http://ukcoding.com
 Description: Track submit of reviews
 Version:     1.0.0
@@ -23,6 +23,7 @@ if ( file_exists( dirname( __FILE__ ) . '/vendor/autoload.php' ) ) {
 
 
 
+require_once dirname(__FILE__) . '/testUpload.php';
 
 use Inc\Base\Activate;
 use Inc\Base\Deactivate;
@@ -41,10 +42,62 @@ if (class_exists ('Inc\\Init')) {
 }
 
 
+/*
+function hook_me_up_upload_csv_file(){
+
+    // $_FILES['file']['tmp_name'];
+  $FILE_POST =  $_FILES['file'] ;
+    // Check if file was uploaded without errors
+    // $allowed = array("jpg" => "image/jpg");
+   $filename = $FILE_POST["name"];
+    $filetype = $FILE_POST["type"];
+    $filesize = $FILE_POST["size"];
+    $newFilename = time() .'_'. $FILE_POST["name"];
+   $location = plugin_dir_path( __FILE__ ).'upload/'. $newFilename;
+    //$filetype = wp_check_filetype( basename( $FILE_POST["tmp_name"] ), array('csv' => 'text/csv') );
+    $mimes = array('application/vnd.ms-excel','text/plain','text/csv','text/tsv');
 
 
 
 
+    move_uploaded_file($FILE_POST["tmp_name"], $location);
+
+    if( ($handle = fopen( $location, 'r' )) !== false )
+    {
+        $output = '<table class="widefat fixed" cellspacing="0">';
+        while( ($data = fgetcsv( $handle )) !== false )
+        {
+            $output .= '<tr >';
+            foreach( $data as $value )
+            {
+                $output .= sprintf( '<td>%s</td>', $value );
+
+            }
+            $output .= sprintf( '<td>%s</td>', '+' );
+            $output .= sprintf( '<td>%s</td>', 'x' );
+            $output .= '</tr>';
+
+        }
+        fclose( $handle );
+        $output .= '</table>';
+    }
+    echo $output;
+
+
+
+}
+
+
+
+
+add_action( 'wp_ajax_hook_me_up_upload_csv_file', 'hook_me_up_upload_csv_file' );
+
+
+
+
+
+
+*/
 
 
 

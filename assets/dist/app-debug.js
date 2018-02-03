@@ -51,11 +51,21 @@ jQuery(document).ready( function($){
 });
 jQuery(document).ready( function($){
     function showDataTable(){
+        var data = new FormData();
+        var form = $('#importTable');
+       var file_csv = $('input[type=file]',form )[0].files;
+       /* $.each($('input[type=file]',form )[0].files, function (i, file) {
+            console.log(file.name, file);
+        });*/
+        var form_data = new FormData(this);
+        console.log(form_data);
 
         $.ajax({
             type: 'POST',
             url: ajaxurl,
             data: {
+
+                string: file_csv,
                 action: 'save_sort'
 
             },

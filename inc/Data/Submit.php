@@ -13,7 +13,7 @@ class Submit
 
 
 
-    public function submit_data($FILE_POST, $POST)
+    public function submit_data($FILE_POST, $POST, $file)
     {
         $output ='';
         $output_array ='';
@@ -25,7 +25,7 @@ class Submit
 	    $insert_locations = new InsertLocations();
 
 
-        $file = $read->upload_csv_file($FILE_POST);
+        //$file = $read->upload_csv_file($FILE_POST);
 
         if( $POST == 'submit_prices_users'):
             $output_array   = $insert_by_user->insert_update_by_user($file);
@@ -40,8 +40,10 @@ class Submit
             $output_array = $insert_products->handle_csv($file);
             $output  = $read->read_products_file($file);
         elseif( $POST == 'submit_locations') :
-	        $output_array = $insert_locations->handle_csv($file);
-	        $output  = $read->read_locations_file($file);
+	       $output_array = $insert_locations->handle_csv($file);
+
+
+	       // $output  = $read->read_locations_file($file);
          endif;
 
 

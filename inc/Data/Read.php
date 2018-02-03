@@ -34,13 +34,6 @@ class Read extends BaseController {
                 <p>File is empty.</p>
             </div>
 
-
-
-
-
-            <div class="notice notice-info is-dismissible">
-                <p>This is some information.</p>
-            </div>
             <?php
             exit();
 

@@ -8,11 +8,6 @@ if (!defined('ABSPATH')) {
 
 }
 
-use \Inc\Base\BaseController;
-
-//$file = content_url().'/plugins/hook-me-up-csv/newp.csv';
-//echo file_get_contents($file);
-
 ?>
     <h1>
         <?php echo esc_html(get_admin_page_title()); ?>
@@ -22,10 +17,7 @@ use \Inc\Base\BaseController;
     <div class="wrap">
         <h2>Upload CSV File</h2>
         <span>
-			<?php use Inc\Data\Upload;
 
-
-            ?>
 			</span>
         <hr>
 
@@ -87,18 +79,29 @@ use \Inc\Base\BaseController;
 
                 <form action=""  id="importTable" method="post" enctype="multipart/form-data">
                     <label for="">Import Locations:</label><br>
-                    <input type="file" name="file_locations" id="fileToUpload">
-                    <input class="btn btn-primary" type="submit" value="Insert/Update Locations" name="submit_locations">
+                    <input type="file" name="file_locations" id="locationUpload">
+                    <input class="btn btn-primary" type="submit" value="Upload Locations File">
+                </form>
+                <form action=""  id="submitTable" method="post" enctype="multipart/form-data">
+                     <input class="btn btn-primary" type="submit" value="Insert/Update Locations" name="submit_locations">
                 </form>
             </div>
 
         </div><!-- container -->
 
+        <div class="output-table">
+
+        </div>
+
 
         <?php
 
         use Inc\Data\Submit;
+        use Inc\Data\InsertLocations;
+        use Inc\Data\Upload;
         $submit = new Submit();
+        $insert_locations = new InsertLocations();
+       // $upload = new Upload();
 
 
         if (isset($_POST["submit_prices_users"]) && !empty($_FILES["file_prices_users"]["name"])) {
@@ -131,6 +134,8 @@ use \Inc\Base\BaseController;
             echo $submit->submit_data($FILE_POST, 'submit_users');
 
 
+
+
         }
 
         if (isset($_POST["submit_products"]) && !empty($_FILES["file_products"]["name"]) ) {?>
@@ -145,18 +150,28 @@ use \Inc\Base\BaseController;
 
         }
 
-        if (isset($_POST["submit_locations"]) && !empty($_FILES["file_locations"]["name"]) ) {?>
+
+      /*  if (isset($_POST["submit_locations"]) && !empty($_FILES["file_locations"]["name"]) ) {*/?><!--
+            <div class="notice notice-success is-dismissible">
+                <h1>Locations Uploaded:</h1>
+            </div>
+            --><?php
+/*	        $FILE_POST = $_FILES["file_locations"];
+	        echo $submit->submit_data($FILE_POST, 'submit_locations');
+
+
+        }*/
+        if (isset($_POST["submit_locations"]) ) { global  $FILE_POST; ?>
             <div class="notice notice-success is-dismissible">
                 <h1>Locations Uploaded:</h1>
             </div>
             <?php
-	        $FILE_POST = $_FILES["file_locations"];
-	        echo $submit->submit_data($FILE_POST, 'submit_locations');
+
+            echo $insert_locations->handle_csv($FILE_POST);
 
 
         }
-
-
+//$upload->register();
         ?>
     </div>
 
