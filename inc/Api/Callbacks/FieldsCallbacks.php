@@ -32,19 +32,19 @@ class FieldsCallbacks extends BaseController {
 
     
            // return $output;
-        foreach($_FILES['hum_import']['tmp_name'] as $key => $tmp_name)
+    /*    foreach($_FILES['hum_import']['tmp_name'] as $key => $tmp_name)
         {
             $file_name = $key.$_FILES['hum_import']['name'][$key];
             $urls = wp_handle_upload($key.$_FILES['hum_import']['name'][$key], array('test_form' => FALSE));
             $temp = $urls["url"];
             $input = $temp;
+        }*/
+       if(!empty($_FILES["hmu_import['upload_file']"]["tmp_name"]))
+      {
+           $urls = wp_handle_upload($_FILES["hmu_import['upload_file']"], array('test_form' => FALSE));
+           $temp = $urls["url"];
+            return $temp;
         }
-//        if(!empty($_FILES["hmu_import['upload_file']"]["tmp_name"]))
-//        {
-//            $urls = wp_handle_upload($_FILES["hmu_import['upload_file']"], array('test_form' => FALSE));
-//            $temp = $urls["url"];
-//            return $temp;
-//        }
 
         return $input;
     }
@@ -84,18 +84,8 @@ class FieldsCallbacks extends BaseController {
 
     }
 
-    public function inputUploadField( $args )
-	{
-        $name = $args['label_for'];
-		$classes = $args['class'];
-         $option_name = $args['option_name'];
-        $value_upload =  get_option( $option_name );
-        echo $uploadvalue = isset($value_upload[$name]) ? $value_upload[$name]  : '';
-        
-		echo '<input type="file"  name="' . $option_name . '[' . $name . ']" value="' . $option_name . '[' . $name . ']"  />';
-    }
 
-    function profilePictureField($args) {
+    function cronFile($args) {
 
         $name = $args['label_for'];
 		$classes = $args['class'];
@@ -103,9 +93,15 @@ class FieldsCallbacks extends BaseController {
         $value =  get_option( $option_name );
 
         if( empty($value[$name]) ){
-            echo '<button type="button" class="button button-secondary" value="Upload Profile Picture" id="upload-button"><span class="sunset-icon-button dashicons-before dashicons-format-image"></span> Upload Profile Picture</button><input type="hidden" id="profile-picture" name="'. $option_name.'['.$name.']"  value="" />';
+            echo '<button type="button" class="button button-secondary" value="Upload Profile Picture" id="upload-button">
+                    <span class="sunset-icon-button dashicons-before dashicons-format-image"></span> Upload Cron File</button>
+                    <input type="hidden" id="profile-picture" name="'. $option_name.'['.$name.']"  value="" />';
         } else {
-            echo '<button type="button" class="button button-secondary" value="Replace Profile Picture" id="upload-button"><span class="sunset-icon-button dashicons-before dashicons-format-image"></span> Replace Profile Picture</button><input type="hidden" id="profile-picture" name="'. $option_name.'['.$name.']" value="'.esc_attr($value[$name]).'" /> <button type="button" class="button button-secondary" value="Remove" id="remove-picture"><span class="sunset-icon-button dashicons-before dashicons-no"></span> Remove</button>';
+            echo '<button type="button" class="button button-secondary" value="Replace cron file" id="upload-button">
+                    <span class="sunset-icon-button dashicons-before dashicons-format-image"></span> Replace Cron File</button>
+                    <input type="hidden" id="profile-picture" name="'. $option_name.'['.$name.']" value="'.esc_attr($value[$name]).'" />
+                     <button type="button" class="button button-secondary" value="Remove" id="remove-picture">
+                     <span class="sunset-icon-button dashicons-before dashicons-no"></span> Remove</button>';
         }
         
     }
@@ -149,6 +145,7 @@ class FieldsCallbacks extends BaseController {
         echo '
          <select name="' . $option_name . '[' . $name . ']">
             <option value="">'.$cron_value.'</option>
+            <option value="every_one_minute">1min</option>
             <option value="hourly">hourly</option>
              <option value="twicedaily">twicedaily</option>
             <option value="Daily">Daily</option>
@@ -172,6 +169,7 @@ class FieldsCallbacks extends BaseController {
        }
 
     }
+
 
 
     

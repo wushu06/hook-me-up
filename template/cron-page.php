@@ -18,7 +18,7 @@
     <?php
     settings_fields( 'hmu_cron_options_group' );
     do_settings_sections( 'cron_task' );
-    submit_button( 'Create task', 'primary', 'btnSubmit' );
+    submit_button( 'Create task', '', 'btnSubmit' );
     ?>
 
 </form>

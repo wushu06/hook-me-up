@@ -1,6 +1,7 @@
 <?php
 
 namespace Inc\Base;
+use Inc\Data\InsertLocations;
 
 class Cron
 {
@@ -39,17 +40,26 @@ class Cron
 
     public function hmu_activation_cron ()
     {
-        ob_start();
+        $this->option  = get_option ('hmu_cron');
+        @$file  =  get_option('hmu_cron')['cron_file'] ;
+
+        $insert_locations = new InsertLocations();
+        $insert_locations->handle_csv($file);
+       /* ob_start();
 
         $to = 'nourwushu@gmail.com';
         $subject = 'Test my 3-minute cron job';
         $message = 'If you received this message, it means that your 3-minute cron job has worked!';
         wp_mail($to, $subject, $message);
         ob_get_contents();
-        ob_end_clean();
+        ob_end_clean();*/
     }
     public function cron_recurrence_interval($schedules)
     {
+        $schedules['every_one_minute'] = array(
+            'interval' => 60,
+            'display' => __('Every 1 Minutes', 'textdomain')
+        );
 
         $schedules['every_three_minutes'] = array(
             'interval' => 180,

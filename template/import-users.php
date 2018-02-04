@@ -11,7 +11,7 @@
 	<?php 
 		settings_fields( 'hmu_import_options_group' );
 		do_settings_sections( 'import_users' );
-		submit_button( 'Upload Users', 'primary', 'btnSubmit' ); 
+		submit_button( 'Upload Users', '', 'btnSubmit' );
 	?>
 
 </form>
