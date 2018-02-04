@@ -50,39 +50,76 @@ jQuery(document).ready( function($){
 
 });
 jQuery(document).ready( function($){
-    function showDataTable(){
-        var data = new FormData();
-        var form = $('#importTable');
-       var file_csv = $('input[type=file]',form )[0].files;
-       /* $.each($('input[type=file]',form )[0].files, function (i, file) {
-            console.log(file.name, file);
-        });*/
-        var form_data = new FormData(this);
-        console.log(form_data);
+
+
+    $(".button-primary").on('click', function(e){
+        e.preventDefault();
+        var file_csv1 = $('#locationUpload1').prop('files')[0];
+        var file_csv2 = $('#locationUpload2').prop('files')[0];
+        var file_csv3 = $('#locationUpload3').prop('files')[0];
+        var file_csv4 = $('#locationUpload4').prop('files')[0];
+        var file_csv5 = $('#locationUpload5').prop('files')[0];
+        var btn = $(this);
+        var file_csv;
+
+
+            if (file_csv1  !==  undefined ) {
+
+                file_csv = file_csv1;
+
+            }else if  (file_csv2  !== undefined ) {
+
+                file_csv = file_csv2;
+            }else if  (file_csv3  !== undefined ) {
+
+                file_csv = file_csv3;
+            }else if  (file_csv4 !== undefined ) {
+
+                file_csv = file_csv4;
+            }else if  (file_csv5 !== undefined ) {
+
+                file_csv = file_csv5;
+            }
+
+
+
+
+
+
+
+        var form_data = new FormData();
+
+        form_data.append('file', file_csv);
+        form_data.append('action', 'hook_me_up_upload_csv_file');
+        form_data.append('security', WP_JOB_LISTING.security);
+
+
+
+
+
 
         $.ajax({
             type: 'POST',
             url: ajaxurl,
-            data: {
 
-                string: file_csv,
-                action: 'save_sort'
+            contentType: false,
+            processData: false,
+            data: form_data,
 
-            },
-            error: function( error ) {
-                console.log('ERROr');
-            },
-            success:function(data){
+            success:function(response){
+                if( true === response.success ) {
 
-               console.log('suc'+data);
+                    $('.output-table').append(response.data);
+                    btn.next().removeClass('hidden');
+
+                    // console.log(response.data);
+                } else {
+
+                    console.log('failed!');
+                }
+
             }
         });
-
-    }
-
-    $('#importTable').on('submit', function(e){
-        e.preventDefault();
-        showDataTable()
     });
 });
 

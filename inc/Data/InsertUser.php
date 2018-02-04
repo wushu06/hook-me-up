@@ -53,7 +53,7 @@ class InsertUser extends BaseController
                 $last_name = $slice[3];
                 $role = $slice[4];
 
-                return $reault_array = $this->insert_update_user($username, $email, $password = NULL, $first_name, $last_name, $role);
+                 $reault_array = $this->insert_update_user($username, $email, $password = NULL, $first_name, $last_name, $role);
 
                    // echo $reault_array['msg'];
                     //echo ($reault_array['check'] == true ? 'Send Email' : 'dont send email');
@@ -62,9 +62,8 @@ class InsertUser extends BaseController
 
             }//end of while
 
-            // $ruleManager->setUnusedRulesAsInactive();
-            //display summary
         }
+        return $reault_array;
 
 
     }

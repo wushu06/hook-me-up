@@ -8,6 +8,23 @@ if (!defined('ABSPATH')) {
 
 }
 
+use Inc\Data\InsertPriceByUser;
+use Inc\Data\InsertPriceByRole;
+use Inc\Data\InsertUser;
+use Inc\Data\InsertProducts;
+use Inc\Data\Submit;
+use Inc\Data\InsertLocations;
+use Inc\Data\UploadFile;
+
+$insert_by_user = new InsertPriceByUser();
+$insert_by_role = new InsertPriceByRole();
+$insert_users = new InsertUser();
+$insert_products = new InsertProducts();
+$insert_locations = new InsertLocations();
+
+$submit = new Submit();
+$upload = new UploadFile();
+
 ?>
     <h1>
         <?php echo esc_html(get_admin_page_title()); ?>
@@ -39,8 +56,9 @@ if (!defined('ABSPATH')) {
 
                 <form action="" method="post" enctype="multipart/form-data">
                     <label for="">Insert New Prices(By User):</label><br>
-                    <input type="file" name="file_prices_users" id="fileToUpload">
-                    <input class="btn btn-primary" type="submit" value="Insert/Update Prices"
+                    <input type="file" name="file_prices_users" id="locationUpload1">
+                    <button id="importTable1" class="button-primary"> Upload File </button>
+                    <input class="btn btn-primary  hidden" type="submit" value="Insert/Update Prices"
                            name="submit_prices_users">
                 </form>
 
@@ -51,8 +69,9 @@ if (!defined('ABSPATH')) {
 
                 <form action="" method="post" enctype="multipart/form-data">
                     <label for="">Insert New Products(By Role):</label><br>
-                    <input type="file" name="file_price_role" id="fileToUpload">
-                    <input class="btn btn-primary" type="submit" value="Insert/Update Prices" name="submit_prices_role">
+                    <input type="file" name="file_price_role" id="locationUpload2">
+                    <button id="importTable2" class="button-primary"> Upload File </button>
+                    <input class="btn btn-primary hidden" type="submit" value="Insert/Update Prices" name="submit_prices_role">
                 </form>
             </div>
 
@@ -60,8 +79,9 @@ if (!defined('ABSPATH')) {
 
                 <form action="" method="post" enctype="multipart/form-data">
                     <label for="">Insert Users:</label><br>
-                    <input type="file" name="file_users" id="fileToUpload">
-                    <input class="btn btn-primary" type="submit" value="Insert/Update Users" name="submit_users">
+                    <input type="file" name="file_users" id="locationUpload3">
+                    <button id="importTable3" class="button-primary"> Upload File </button>
+                    <input class="btn btn-primary hidden" type="submit" value="Insert/Update Users" name="submit_users">
                 </form>
             </div>
 
@@ -70,45 +90,40 @@ if (!defined('ABSPATH')) {
 
                 <form action="" method="post" enctype="multipart/form-data">
                     <label for="">Import Products:</label><br>
-                    <input type="file" name="file_products" id="fileToUpload">
-                    <input class="btn btn-primary" type="submit" value="Insert/Update Products" name="submit_products">
+                    <input type="file" name="file_products" id="locationUpload4">
+                    <button id="importTable4" class="button-primary"> Upload File </button>
+                    <input class="btn btn-primary hidden" type="submit" value="Insert/Update Products" name="submit_products">
                 </form>
             </div>
 
             <div id="tab-5" class="tab-content">
 
-                <form action=""  id="importTable" method="post" enctype="multipart/form-data">
+                <form action=""   method="post" enctype="multipart/form-data">
                     <label for="">Import Locations:</label><br>
-                    <input type="file" name="file_locations" id="locationUpload">
-                    <input class="btn btn-primary" type="submit" value="Upload Locations File">
+                    <input type="file" name="file_locations" id="locationUpload5">
+                    <button id="importTable" class="button-primary"> Upload File </button>
+                    <input class="btn btn-primary hidden" type="submit" value="Insert/Update Locations" name="submit_locations">
                 </form>
-                <form action=""  id="submitTable" method="post" enctype="multipart/form-data">
-                     <input class="btn btn-primary" type="submit" value="Insert/Update Locations" name="submit_locations">
-                </form>
+
             </div>
 
         </div><!-- container -->
 
         <div class="output-table">
 
+
         </div>
 
 
         <?php
 
-        use Inc\Data\Submit;
-        use Inc\Data\InsertLocations;
-        use Inc\Data\Upload;
-        $submit = new Submit();
-        $insert_locations = new InsertLocations();
-       // $upload = new Upload();
 
 
         if (isset($_POST["submit_prices_users"]) && !empty($_FILES["file_prices_users"]["name"])) {
 
             echo '<h1>Upload Prices By User</h1>';
-            $FILE_POST = $_FILES["file_prices_users"];
-            echo $submit->submit_data($FILE_POST, 'submit_prices_users');
+            $FILE_POST = $_FILES["file_prices_users"]['tmp_name'];
+            echo $submit->submit_data( 'submit_prices_users', $FILE_POST);
 
 
         }
@@ -120,8 +135,8 @@ if (!defined('ABSPATH')) {
             <?php
             //  echo    $csv_file                        = $this->plugin_url.'user_price.csv';
             //$file = $this->plugin_path.'price.csv';
-            $FILE_POST = $_FILES["file_price_role"];
-            echo $submit->submit_data($FILE_POST, 'submit_prices_role');
+            $FILE_POST = $_FILES["file_price_role"]['tmp_name'];
+            echo $submit->submit_data( 'submit_prices_role', $FILE_POST);
         }
 
 
@@ -130,8 +145,8 @@ if (!defined('ABSPATH')) {
                 <h1>Users Uploaded:</h1>
             </div>
             <?php
-            $FILE_POST = $_FILES["file_users"];
-            echo $submit->submit_data($FILE_POST, 'submit_users');
+            $FILE_POST = $_FILES["file_users"]['tmp_name'];
+            echo $submit->submit_data( 'submit_users', $FILE_POST);
 
 
 
@@ -144,8 +159,8 @@ if (!defined('ABSPATH')) {
             </div>
             <?php
             // $file = $this->plugin_path.'new.csv';
-             $FILE_POST = $_FILES["file_products"];
-             echo $submit->submit_data($FILE_POST, 'submit_products');
+             $FILE_POST = $_FILES["file_products"]['tmp_name'];
+             echo $submit->submit_data( 'submit_products', $FILE_POST);
 
 
         }
@@ -161,13 +176,15 @@ if (!defined('ABSPATH')) {
 
 
         }*/
-        if (isset($_POST["submit_locations"]) ) { global  $FILE_POST; ?>
+        if (isset($_POST["submit_locations"]) ) {
+             ?>
             <div class="notice notice-success is-dismissible">
                 <h1>Locations Uploaded:</h1>
             </div>
             <?php
-
-            echo $insert_locations->handle_csv($FILE_POST);
+            $FILE_POST = $_FILES["file_locations"]['tmp_name'];
+            echo $submit->submit_data( 'submit_locations', $FILE_POST);
+           // echo $insert_locations->handle_csv($FILE_POST);
 
 
         }

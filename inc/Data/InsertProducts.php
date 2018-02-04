@@ -48,7 +48,7 @@ class InsertProducts
                 $post_name = $slice[1];
 
 
-                return $reault_array = $this->insert_update_products($post_title, $post_name);
+                 $reault_array = $this->insert_update_products($post_title, $post_name);
 
 
 
@@ -58,6 +58,7 @@ class InsertProducts
 
 
         }
+        return $reault_array;
 
 
     }

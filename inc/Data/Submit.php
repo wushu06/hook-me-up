@@ -13,10 +13,10 @@ class Submit
 
 
 
-    public function submit_data($FILE_POST, $POST, $file)
+    public function submit_data( $POST, $file)
     {
         $output ='';
-        $output_array ='';
+        '';
         $read = new Read();
         $insert_by_user = new InsertPriceByUser();
         $insert_by_role = new InsertPriceByRole();
@@ -29,18 +29,18 @@ class Submit
 
         if( $POST == 'submit_prices_users'):
             $output_array   = $insert_by_user->insert_update_by_user($file);
-            $output .= $read->read_prices_file($file);
+           // $output .= $read->read_prices_file($file);
          elseif( $POST == 'submit_prices_role') :
              $output_array   = $insert_by_role->insert_update_by_role($file);
-             $output  .= $read->read_prices_file($file);
+           //  $output  .= $read->read_prices_file($file);
          elseif( $POST == 'submit_users') :
-             $output_array = $insert_users->handle_csv($file);
-             $output  = $read->read_users_file($file);
+              $insert_users->handle_csv($file);
+           //  $output  = $read->read_users_file($file);
         elseif( $POST == 'submit_products') :
-            $output_array = $insert_products->handle_csv($file);
-            $output  = $read->read_products_file($file);
+             $insert_products->handle_csv($file);
+           // $output  = $read->read_products_file($file);
         elseif( $POST == 'submit_locations') :
-	       $output_array = $insert_locations->handle_csv($file);
+	         $insert_locations->handle_csv($file);
 
 
 	       // $output  = $read->read_locations_file($file);
@@ -50,7 +50,7 @@ class Submit
          $this->send_email ($file);
 
 
-        return sprintf("<h3> %s </h3> <hr><h3>Result:</h3> %s.",$output_array['msg'],$output);
+        // return sprintf("<h3> %s </h3> <hr><h3>Result:</h3> %s.",$output_array['msg'],$output);
 
 
     }

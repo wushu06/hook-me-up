@@ -58,7 +58,7 @@ class InsertLocations
 				$location_city = $slice[3];
 				$location_country = $slice[4];
 
-				return $reault_array = $this->insert_update_locations($location_name, $location_postcode, $location_address, $location_city, $location_country);
+				$reault_array = $this->insert_update_locations($location_name, $location_postcode, $location_address, $location_city, $location_country);
 
 
 
@@ -68,6 +68,7 @@ class InsertLocations
 
 
 		}
+        return $reault_array;
 
 
 
@@ -100,9 +101,12 @@ class InsertLocations
 
 
             $this->data_check = true;
-        } else {
-            echo 'This Post already exists '.$location_name.'<br />';
-            $my_post = array(
+        } else {?>
+            <div class="notice notice-error is-dismissible">
+                <p>This Post <strong><?php echo $location_name ?></strong> already exists</p>
+            </div>
+
+           <?php $my_post = array(
                 'ID'           =>  $page->ID,
                 'post_title'   => $location_name,
 
