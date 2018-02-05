@@ -20,6 +20,23 @@
     do_settings_sections( 'cron_task' );
     submit_button( 'Create task', '', 'btnSubmit' );
     ?>
+<?php
+    $option  = get_option ('hmu_cron');
+    @$cron_time  =   $option['cron_time'] ;
+    @$cron_file  =   $option['cron_file'] ;
+    @$cron_name  =   $option['cron_name'] ;
+
+    if(@$cron_name):
+
+        echo '<div class="cron-wrapper"><h4>Next Schdeduled Task:
+                </h4>' . $cron_name . '<br>
+                <h4>Frequency: </h4>' . $cron_time.'<br/>
+                <h4>File Path:</h4>'.$cron_file;
+    endif;
+
+
+
+?>
 
 </form>
     <form method="POST" action="">
@@ -35,12 +52,10 @@ $cron = new Cron();
  $cron->register() ;*/
 
 if(isset($_POST['delete_cron'])){
-    wp_clear_scheduled_hook( 'hmu_activation_cron' );
+    wp_clear_scheduled_hook( 'hmu_upload_file_cron' );
     $default = array();
-
-
     update_option( 'hmu_cron', $default );
-    echo 'Cron has been deleted';
+    echo 'Task has been deleted';
 }
 
 

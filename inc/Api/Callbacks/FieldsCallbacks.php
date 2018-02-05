@@ -103,7 +103,7 @@ class FieldsCallbacks extends BaseController {
                      <button type="button" class="button button-secondary" value="Remove" id="remove-picture">
                      <span class="sunset-icon-button dashicons-before dashicons-no"></span> Remove</button>';
         }
-        
+
     }
 
     function emailActivationField ($args) {
@@ -163,10 +163,7 @@ class FieldsCallbacks extends BaseController {
         $isvalue = isset($value[$name]) ? $value[$name]  : '';
 
             echo '<input type="text" class="regular-text" name="'. $option_name.'['.$name.']"  value="' . $isvalue . '"  placeholder="Name of the task">';
-        if($isvalue !=='') {
-           echo '<div class="cron-wrapper"><h4>Next Schdeduled Task: </h4>' . $isvalue . '<br><h4>Frequency: </h4>' . get_option("hmu_cron")["cron_time"];
-           echo '<br><a class="button delete-cron" href="#">Delete Task</a></div>';
-       }
+
 
     }
 

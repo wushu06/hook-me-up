@@ -40,7 +40,44 @@ register_deactivation_hook( __FILE__, 'hook_me_up_deactivate' );
 if (class_exists ('Inc\\Init')) {
 	Inc\Init::register_services();
 }
+/*class cron_nour{
 
+    function __construct()
+    {
+        add_filter('cron_schedules', array($this, 'isa_add_cron_recurrence_interval') );
+
+        if (!wp_next_scheduled('your_three_minute_action_hook')) {
+            wp_schedule_event(time(), 'every_three_minutes', 'your_three_minute_action_hook');
+        }
+
+        add_action('your_three_minute_action_hook', array($this,'isa_test_cron_job_send_mail') );
+    }
+
+    function isa_add_cron_recurrence_interval($schedules) {
+
+        $schedules['every_three_minutes'] = array(
+            'interval' => 60,
+            'display' => __('Every 3 Minutes', 'textdomain')
+        );
+
+        return $schedules;
+    }
+
+
+    function isa_test_cron_job_send_mail()
+    {
+        wp_insert_post(array(
+            'post_title' => 'threeCRONMINE',
+            'post_content' => '',
+            'post_status' => 'publish',
+            'post_type' => "wpsl_stores",
+        ));
+
+    }
+
+}
+new cron_nour();*/
+ //wp_clear_scheduled_hook( 'hmu_upload_file_cron' );
 
 /*
 function hook_me_up_upload_csv_file(){
