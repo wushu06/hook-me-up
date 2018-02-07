@@ -12,8 +12,8 @@ class Cron
 
     public function register()
     {
-        $this->option  = get_option ('hmu_cron');
-        @$cron_time  =  get_option('hmu_cron')['cron_time'] ;
+        @$this->option  = get_option ('hmu_cron');
+        @$cron_time  =  $this->option['cron_time'] ;
 
         if(isset($cron_time) && !empty($cron_time)) {
 
@@ -50,9 +50,10 @@ class Cron
 
     function hmu_upload_file_fun()
     {
-        $this->option  = get_option ('hmu_cron');
-        $cron_file  =  get_option('hmu_cron')['cron_file'] ;
-        $cron_name  =  get_option('hmu_cron')['cron_name'] ;
+        @$option  = get_option ('hmu_cron');
+
+        @$cron_file  =   $option['cron_file'] ;
+
         $location = new InsertLocations();
         $location->handle_csv($cron_file);
 

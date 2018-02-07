@@ -58,16 +58,6 @@ class BaseController
                     'boolean'
                 ),
 
-
-            'cron_time' =>
-                array(
-                    'Cron Time ',
-                    'cronTimeField',
-                    'cron_task',
-                    'hmu_cron_index',
-                    'hmu_cron',
-                    'string'
-                ),
             'cron_name' =>
                 array(
                     'Cron Name ',
@@ -77,8 +67,18 @@ class BaseController
                     'hmu_cron',
                     'string'
                 ),
+
+            'cron_time' =>
+                array(
+                    '',
+                    'cronTimeField',
+                    'cron_task',
+                    'hmu_cron_index',
+                    'hmu_cron',
+                    'string'
+                ),
             'cron_file' =>
-                array('Cron File',
+                array('',
                     'cronFile',
                     'cron_task',
                     'hmu_cron_index',

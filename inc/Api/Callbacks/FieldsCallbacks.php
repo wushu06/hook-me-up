@@ -8,11 +8,13 @@ use \Inc\Api\SettingsApi;
 
 class FieldsCallbacks extends BaseController {
 
+    public $cron_name;
+
     public function sanitizeCallback( $input )
 	{
 		// return filter_var($input, FILTER_SANITIZE_NUMBER_INT);
         //return ( isset($input) ? true : false );
-        $output = array();
+        //$output = array();
 
         /*  foreach ($this->dahboardFields   as $id_dash => $dashtitle_callback ) {
 
@@ -39,14 +41,38 @@ class FieldsCallbacks extends BaseController {
             $temp = $urls["url"];
             $input = $temp;
         }*/
-       if(!empty($_FILES["hmu_import['upload_file']"]["tmp_name"]))
+     /*  if(!empty($_FILES["hmu_import['upload_file']"]["tmp_name"]))
       {
            $urls = wp_handle_upload($_FILES["hmu_import['upload_file']"], array('test_form' => FALSE));
            $temp = $urls["url"];
             return $temp;
-        }
 
-        return $input;
+        }*/
+
+        $output = array();
+     if(isset($_POST['btnSubmit'])):
+            $output = get_option('hmu_cron');
+
+
+        if (  empty($output) ) {
+            $output['1'] = $input;
+        }else {
+
+            foreach ($output as $key => $value) {
+                 $count = count($output);
+                  if($key < $count) {
+                    $output[$key] = $value;
+                }else {
+                    $output[$key+1] = $input;
+                }
+
+
+
+            }
+        }
+        endif;
+
+            return $output;
     }
    /* public function inputSanitize( $input )
 	{
@@ -85,26 +111,7 @@ class FieldsCallbacks extends BaseController {
     }
 
 
-    function cronFile($args) {
 
-        $name = $args['label_for'];
-		$classes = $args['class'];
-        $option_name = $args['option_name'];
-        $value =  get_option( $option_name );
-
-        if( empty($value[$name]) ){
-            echo '<button type="button" class="button button-secondary" value="Upload Profile Picture" id="upload-button">
-                    <span class="sunset-icon-button dashicons-before dashicons-format-image"></span> Upload Cron File</button>
-                    <input type="hidden" id="profile-picture" name="'. $option_name.'['.$name.']"  value="" />';
-        } else {
-            echo '<button type="button" class="button button-secondary" value="Replace cron file" id="upload-button">
-                    <span class="sunset-icon-button dashicons-before dashicons-format-image"></span> Replace Cron File</button>
-                    <input type="hidden" id="profile-picture" name="'. $option_name.'['.$name.']" value="'.esc_attr($value[$name]).'" />
-                     <button type="button" class="button button-secondary" value="Remove" id="remove-picture">
-                     <span class="sunset-icon-button dashicons-before dashicons-no"></span> Remove</button>';
-        }
-
-    }
 
     function emailActivationField ($args) {
 
@@ -161,9 +168,32 @@ class FieldsCallbacks extends BaseController {
         $option_name = $args['option_name'];
         $value =  get_option( $option_name );
         $isvalue = isset($value[$name]) ? $value[$name]  : '';
+        $this->cron_name = $isvalue;
 
             echo '<input type="text" class="regular-text" name="'. $option_name.'['.$name.']"  value="' . $isvalue . '"  placeholder="Name of the task">';
 
+
+    }
+
+    function cronFile($args) {
+
+        $name = $args['label_for'];
+        $classes = $args['class'];
+        $option_name = $args['option_name'];
+        $value =  get_option( $option_name );
+
+
+        if( empty($value[$name]) ){
+            echo '<button type="button" class="button button-secondary" value="Upload Profile Picture" id="upload-button">
+                    <span class="sunset-icon-button dashicons-before dashicons-format-image"></span> Upload Cron File</button>
+                    <input type="hidden" id="profile-picture" name="'. $option_name.'['.$name.']"  value="" />';
+        } else {
+            echo '<button type="button" class="button button-secondary" value="Replace cron file" id="upload-button">
+                    <span class="sunset-icon-button dashicons-before dashicons-format-image"></span> Replace Cron File</button>
+                    <input type="hidden" id="profile-picture" name="'. $option_name.'['.$name.']" value="'.esc_attr($value[$name]).'" />
+                     <button type="button" class="button button-secondary" value="Remove" id="remove-picture">
+                     <span class="sunset-icon-button dashicons-before dashicons-no"></span> Remove</button>';
+        }
 
     }
 

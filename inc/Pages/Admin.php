@@ -101,7 +101,7 @@ class Admin extends BaseController {
             array(
                 'option_group' => 'hmu_cron_options_group',
                 'option_name' => 'hmu_cron',
-                //'callback' => array( $this->fields_callbacks, 'sanitizeCallback' )
+                'callback' => array( $this->fields_callbacks, 'sanitizeCallback' )
             )
 			
 		);
