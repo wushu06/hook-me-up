@@ -37,7 +37,7 @@ class Submit
               $insert_users->handle_csv($file);
            //  $output  = $read->read_users_file($file);
         elseif( $POST == 'submit_products') :
-             $insert_products->handle_csv($file);
+             $output = $insert_products->handle_csv($file);
            // $output  = $read->read_products_file($file);
         elseif( $POST == 'submit_locations') :
 	         $insert_locations->handle_csv($file);
@@ -49,7 +49,7 @@ class Submit
 
          $this->send_email ($file);
 
-
+        return $output;
         // return sprintf("<h3> %s </h3> <hr><h3>Result:</h3> %s.",$output_array['msg'],$output);
 
 

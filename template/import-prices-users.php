@@ -160,7 +160,10 @@ $upload = new UploadFile();
             <?php
             // $file = $this->plugin_path.'new.csv';
              $FILE_POST = $_FILES["file_products"]['tmp_name'];
-             echo $submit->submit_data( 'submit_products', $FILE_POST);
+              $su =  $submit->submit_data( 'submit_products', $FILE_POST);
+            foreach ($su as $s => $v ) {
+                echo $v;
+            }
 
 
         }
@@ -193,8 +196,6 @@ $upload = new UploadFile();
     </div>
 
 <?php
-
-
 
 
 
