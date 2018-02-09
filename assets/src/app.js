@@ -17,7 +17,7 @@ jQuery(document).ready( function($){
 
     var mediaUploader;
 
-    $('#upload-button').on('click',function(e) {
+    $('.upload-file').on('click',function(e) {
         e.preventDefault();
         if( mediaUploader ){
             mediaUploader.open();

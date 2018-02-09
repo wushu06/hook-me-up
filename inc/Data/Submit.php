@@ -60,7 +60,7 @@ class Submit
         $insert_users = new InsertUser();
         $insert_products = new InsertProducts();
         $option = get_option ('hmu_dashboard');
-        $send_email = $option["activate_email"];
+        @$send_email = $option["activate_email"];
 
 
         if($send_email == true) {

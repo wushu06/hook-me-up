@@ -16,7 +16,7 @@ class InsertProducts
         $csv_file = $file;
 
         //for checking headers
-        $requiredHeaders = array('post_id','post_title', 'post_name','post_price');
+        $requiredHeaders = array('Internal ID','Product Code','Suggested Name','Website Category','Sub-brand,Description','Short Description','Certification','');
 
         $fptr = fopen($csv_file, 'r');
         $firstLine = fgets($fptr); //get first line of csv file
@@ -25,10 +25,10 @@ class InsertProducts
 
 
         //check the headers of file
-        if ($foundHeaders !== $requiredHeaders) {
+       /* if ($foundHeaders !== $requiredHeaders) {
             echo 'File Header not the same';
             die();
-        }
+        }**/
         $getfile = fopen($csv_file, 'r');
         //$users     = array();
         if (false !== ($getfile = fopen($csv_file, 'r'))) {
@@ -44,12 +44,18 @@ class InsertProducts
                 $result = $data; // two sperate arrays
                 $str = implode(',', $result); // join the two sperate arrays
                 $slice = explode(',', $str); // remove ,
+
+	            //variables
                 $product_id = $slice[0];
-                $post_title = $slice[1];
-                $post_name = $slice[2];
+	            $product_code = $slice[1];
+                $post_title = $slice[2];
+                $cat = $slice[3];
+	            $description = $slice[4];
+	            $short_description = $slice[5];
+	            $cert = $slice[6];
 
 
-                 $reault_array [] = $this->insert_update_products($product_id,$post_title, $post_name);
+                 $reault_array [] = $this->insert_update_products($product_id,$post_title,$cat, $description);
 
 
 
@@ -64,11 +70,24 @@ class InsertProducts
 
     }
 
-    function insert_update_products($product_id, $post_title, $post_name)
+    function insert_update_products($product_id,$post_title,$cat, $description)
     {
         //wp_suspend_cache_addition(true);
 
         global $wpdb;
+	    function seoUrl($string) {
+		    //Lower case everything
+		    $string = strtolower($string);
+		    //Make alphanumeric (removes all other characters)
+		    $string = preg_replace("/[^a-z0-9_\s-]/", "", $string);
+		    //Clean up multiple dashes or whitespaces
+		    $string = preg_replace("/[\s-]+/", " ", $string);
+		    //Convert whitespaces and underscore to dash
+		    $string = preg_replace("/[\s_]/", "-", $string);
+		    return $string;
+	    }
+
+	    $seo = seoUrl($post_title);
 
 
       /*  $qry = "INSERT INTO wp_posts (ID,post_title,post_type) VALUES (%d,%s,%s)";
@@ -91,13 +110,16 @@ class InsertProducts
                 $wpdb->update(
                     $wpdb->posts,
                         array(
-                            'post_title' => $post_title
+                            'post_title' => $post_title,
+	                        'post_content' => $description
                         ),
                         array(
                             'ID' => $product_id
                         ),
+
                         array(
-                            '%s'
+                            '%s',
+	                        '%s'
                         )
                 );
 
@@ -109,11 +131,22 @@ class InsertProducts
                     array(
                         'ID'    => $product_id,
                         'post_title'    => $post_title,
+                        'post_name' => $post_title,
+                        'post_content'=> 'test content',
+                        'guid'=> get_site_url().'/product/'.$seo,
                         'post_type'=>'product'
-                    )
+                    ),
+	                array(
+		                '%d',
+		                '%s',
+		                '%s',
+		                '%s',
+		                '%s',
+		                '%s'
+	                )
                 );
 
-            $msg = $post_title. '  Product has been insert <br/ >';
+               $msg = $post_title. '  Product has been insert <br/ >';
 
             }
 
@@ -121,7 +154,37 @@ class InsertProducts
 
 
 
+	   // wp_set_object_terms( $product_id, 'simple', 'product_type' );
+	    $cat_slug = seoUrl($cat);
+	    //wp_set_post_terms( $product_id, $cat_slug, 'product_cat', true );
+	   // wp_set_post_terms($product_id, $cat_slug, 'product_cat');
+	    wp_set_object_terms($product_id, $cat, 'product_cat', true);
 
+
+
+	    update_post_meta( $product_id, '_visibility', 'visible' );
+	    update_post_meta( $product_id, '_stock_status', 'instock');
+	    update_post_meta( $product_id, 'total_sales', '0' );
+	    update_post_meta( $product_id, '_downloadable', 'no' );
+	    update_post_meta( $product_id, '_virtual', 'yes' );
+	    update_post_meta( $product_id, '_price',  '' );
+	    update_post_meta( $product_id, '_regular_price',  '' );
+	    update_post_meta( $product_id, '_sale_price', '' );
+	    update_post_meta( $product_id, '_purchase_note', '' );
+	    update_post_meta( $product_id, '_featured', 'no' );
+	    update_post_meta( $product_id, '_weight', '' );
+	    update_post_meta( $product_id, '_length', '' );
+	    update_post_meta( $product_id, '_width', '' );
+	    update_post_meta( $product_id, '_height', '' );
+	    update_post_meta( $product_id, '_sku', '' );
+	    update_post_meta($product_id, '_product_attributes', array() );
+	    update_post_meta( $product_id, '_sale_price_dates_from', '' );
+	    update_post_meta( $product_id, '_sale_price_dates_to', '' );
+	    update_post_meta( $product_id, '_price', '' );
+	    update_post_meta( $product_id, '_sold_individually', '' );
+	    update_post_meta( $product_id, '_manage_stock', 'no' );
+	    update_post_meta( $product_id, '_backorders', 'no' );
+	    update_post_meta( $product_id, '_stock', '' );
 
         $wpdb->show_errors();
         return $msg;

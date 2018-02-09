@@ -57,7 +57,7 @@ $upload = new UploadFile();
                 <form action="" method="post" enctype="multipart/form-data">
                     <label for="">Insert New Prices(By User):</label><br>
                     <input type="file" name="file_prices_users" id="locationUpload1">
-                    <button id="importTable1" class="button-primary"> Upload File </button>
+                    <button id="importTable1" class="upload-file"> Upload File </button>
                     <input class="btn btn-primary  hidden" type="submit" value="Insert/Update Prices"
                            name="submit_prices_users">
                 </form>
@@ -70,7 +70,7 @@ $upload = new UploadFile();
                 <form action="" method="post" enctype="multipart/form-data">
                     <label for="">Insert New Products(By Role):</label><br>
                     <input type="file" name="file_price_role" id="locationUpload2">
-                    <button id="importTable2" class="button-primary"> Upload File </button>
+                    <button id="importTable2" class="upload-file"> Upload File </button>
                     <input class="btn btn-primary hidden" type="submit" value="Insert/Update Prices" name="submit_prices_role">
                 </form>
             </div>
@@ -80,7 +80,7 @@ $upload = new UploadFile();
                 <form action="" method="post" enctype="multipart/form-data">
                     <label for="">Insert Users:</label><br>
                     <input type="file" name="file_users" id="locationUpload3">
-                    <button id="importTable3" class="button-primary"> Upload File </button>
+                    <button id="importTable3" class="upload-file"> Upload File </button>
                     <input class="btn btn-primary hidden" type="submit" value="Insert/Update Users" name="submit_users">
                 </form>
             </div>
@@ -91,7 +91,7 @@ $upload = new UploadFile();
                 <form action="" method="post" enctype="multipart/form-data">
                     <label for="">Import Products:</label><br>
                     <input type="file" name="file_products" id="locationUpload4">
-                    <button id="importTable4" class="button-primary"> Upload File </button>
+                    <button id="importTable4" class="upload-file"> Upload File </button>
                     <input class="btn btn-primary hidden" type="submit" value="Insert/Update Products" name="submit_products">
                 </form>
             </div>
@@ -101,7 +101,7 @@ $upload = new UploadFile();
                 <form action=""   method="post" enctype="multipart/form-data">
                     <label for="">Import Locations:</label><br>
                     <input type="file" name="file_locations" id="locationUpload5">
-                    <button id="importTable" class="button-primary"> Upload File </button>
+                    <button id="importTable" class="upload-file"> Upload File </button>
                     <input class="btn btn-primary hidden" type="submit" value="Insert/Update Locations" name="submit_locations">
                 </form>
 
@@ -199,13 +199,80 @@ $upload = new UploadFile();
 
 
 
+$csv_file                        = '/Volumes/Enterprise/Enterprise/WWW_Workspace/checkfire/wp-content/plugins/hook-me-up/newproduct.csv';
+// $csv_file = $this->plugin_url.'users.csv';
+
+
+//for checking headers
+$requiredHeaders = array('Internal ID','Product Code','Suggested Name','Website Category','Sub-brand,Description','Short Description','Certification','');
+
+$fptr = fopen($csv_file, 'r');
+$firstLine = fgets($fptr); //get first line of csv file
+fclose($fptr);
+$foundHeaders = str_getcsv(trim($firstLine), ',', '"'); //parse to array
+
+
+//check the headers of file
+/* if ($foundHeaders !== $requiredHeaders) {
+	 echo 'File Header not the same';
+	 die();
+ }**/
+$getfile = fopen($csv_file, 'r');
+//$users     = array();
+if (false !== ($getfile = fopen($csv_file, 'r'))) {
+	$data = fgetcsv($getfile, 1000, ',');
+	//display table headers
+	//var_dump($data  );
+
+	$update_cnt = 0;
+	$insert_cnt = 0;
+	$count = 0;
+	while (false !== ($data = fgetcsv($getfile, 1000, ','))) {
+		$count++;
+		$result = $data; // two sperate arrays
+		$str = implode(',', $result); // join the two sperate arrays
+		$slice = explode(',', $str); // remove ,
+
+		//variables
+		echo $product_id = $slice[0];
+		echo $product_code = $slice[1];
+		echo $post_title = $slice[2];
+		echo $cat = $slice[3];
+		echo $description = $slice[4];
+		echo $short_description = $slice[5];
+		echo $cert = $slice[6];
+
+		function seoUrl($string) {
+			//Lower case everything
+			$string = strtolower($string);
+			//Make alphanumeric (removes all other characters)
+			$string = preg_replace("/[^a-z0-9_\s-]/", "", $string);
+			//Clean up multiple dashes or whitespaces
+			$string = preg_replace("/[\s-]+/", " ", $string);
+			//Convert whitespaces and underscore to dash
+			$string = preg_replace("/[\s_]/", "-", $string);
+			return $string;
+		}
+
+		$seo = seoUrl($post_title);
+
+echo get_site_url().'/product/'.$seo;
+		//$reault_array [] = $this->insert_update_products($product_id,$post_title,$cat, $description);
 
 
 
 
 
+	}//end of while
 
 
+}
+
+
+
+/*wp_set_object_terms('205', 'newcxat', 'product_cat', true);*/
+
+//wp_set_object_terms( '201', 'simple', 'product_cat', true );
 
 
 

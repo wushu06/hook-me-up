@@ -52,7 +52,7 @@ jQuery(document).ready( function($){
 jQuery(document).ready( function($){
 
 
-    $(".button-primary").on('click', function(e){
+    $(".upload-file").on('click', function(e){
         e.preventDefault();
         var file_csv1 = $('#locationUpload1').prop('files')[0];
         var file_csv2 = $('#locationUpload2').prop('files')[0];
