@@ -60,7 +60,7 @@ class BaseController
 
             'cron_name' =>
                 array(
-                    'Cron Name ',
+                    '',
                     'cronNameField',
                     'cron_task',
                     'hmu_cron_index',
@@ -77,14 +77,40 @@ class BaseController
                     'hmu_cron',
                     'string'
                 ),
-            'cron_file' =>
+            'cron_function' =>
+                array(
+                    '',
+                    'cronFunction',
+                    'cron_task',
+                    'hmu_cron_index',
+                    'hmu_cron',
+                    'string'
+                ),
+        /*    'cron_file' =>
                 array('',
                     'cronFile',
                     'cron_task',
                     'hmu_cron_index',
                     'hmu_cron',
                     'string'
+                ),*/
+
+            'cron_upload' =>
+                array('',
+                    'cronUpload',
+                    'cron_task',
+                    'hmu_cron_index',
+                    'hmu_cron',
+                    'string'
                 ),
+            'cron_url' =>
+                array('',
+                    'cronURL',
+                    'cron_task',
+                    'hmu_cron_index',
+                    'hmu_cron',
+                    'string'
+                )
 
 
         );

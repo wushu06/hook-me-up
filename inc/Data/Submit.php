@@ -34,8 +34,8 @@ class Submit
              $output_array   = $insert_by_role->insert_update_by_role($file);
            //  $output  .= $read->read_prices_file($file);
          elseif( $POST == 'submit_users') :
-              $insert_users->handle_csv($file);
-           //  $output  = $read->read_users_file($file);
+             $output =  $insert_users->handle_csv($file);
+              // $read->read_users_file($file);
         elseif( $POST == 'submit_products') :
              $output = $insert_products->handle_csv($file);
            // $output  = $read->read_products_file($file);
@@ -64,7 +64,7 @@ class Submit
 
 
         if($send_email == true) {
-            if ($insert_users->data_check  == true ){
+            if ($insert_users->dataCheck  == true ){
                 $to = get_bloginfo('admin_email');
                 $subject = get_bloginfo('name').' Users Update';
                 $message = 'new users have been added / updated';

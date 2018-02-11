@@ -10,7 +10,68 @@ class FieldsCallbacks extends BaseController {
 
     public $cron_name;
 
-    public function sanitizeCallback( $input )
+    public function sanitizeCallback2( $input )
+    {
+        $output = array();
+      /*  $r = array();
+        if(!empty($_FILES["hmu_cron"]["tmp_name"]))
+        {
+
+
+                $newFilename =  time().'_'.$_FILES["hmu_cron"]["name"];
+                $location = $this->plugin_path.'Upload/'. $newFilename;
+                move_uploaded_file($_FILES["hmu_cron"]["tmp_name"], $location);
+                $r ['cron_upload'] =  $location;
+
+
+
+        }*/
+
+        if(isset($_POST['btnSubmit'])):
+            $output = get_option('hmu_cron');
+            if(!empty($_FILES["hmu_cron"]["tmp_name"]))
+            {
+                $newFilename =  time().'_'.$_FILES["hmu_cron"]["name"];
+                $location = $this->plugin_url.'Upload/'. $newFilename;
+              //  move_uploaded_file($_FILES["hmu_cron"]["tmp_name"], $location);
+                $movefile = wp_handle_upload($_FILES["hmu_cron"], array('test_form' => FALSE));
+
+
+
+            }
+
+
+
+                if (empty($output)) {
+                    $output['1'] = $input;
+                    $output['1']['cron_upload'] = $movefile['url'];
+
+                } else {
+
+                    foreach ($output as $key => $value) {
+                        $count = count($output);
+                        if ($key < $count) {
+                            $output[$key] = $value;
+                            $output[$key]['cron_upload'] =$movefile['url'];
+
+                        } else {
+                            $output[$key + 1] = $input;
+                            $output[$key + 1]['cron_upload'] =$movefile['url'];
+
+                        }
+
+
+                    }
+                }
+
+        endif;
+
+
+        return $output;
+
+    }
+
+    public function sanitizeCallback( $options )
 	{
 		// return filter_var($input, FILTER_SANITIZE_NUMBER_INT);
         //return ( isset($input) ? true : false );
@@ -34,14 +95,14 @@ class FieldsCallbacks extends BaseController {
 
     
            // return $output;
-    /*    foreach($_FILES['hum_import']['tmp_name'] as $key => $tmp_name)
+      /*  foreach($_FILES['hum_import']['tmp_name'] as $key => $tmp_name)
         {
             $file_name = $key.$_FILES['hum_import']['name'][$key];
             $urls = wp_handle_upload($key.$_FILES['hum_import']['name'][$key], array('test_form' => FALSE));
             $temp = $urls["url"];
             $input = $temp;
         }*/
-     /*  if(!empty($_FILES["hmu_import['upload_file']"]["tmp_name"]))
+      /* if(!empty($_FILES["hmu_import['upload_file']"]["tmp_name"]))
       {
            $urls = wp_handle_upload($_FILES["hmu_import['upload_file']"], array('test_form' => FALSE));
            $temp = $urls["url"];
@@ -49,7 +110,7 @@ class FieldsCallbacks extends BaseController {
 
         }*/
 
-        $output = array();
+/*        $output = array();
      if(isset($_POST['btnSubmit'])):
             $output = get_option('hmu_cron');
 
@@ -70,9 +131,9 @@ class FieldsCallbacks extends BaseController {
 
             }
         }
-        endif;
+        endif;*/
 
-            return $output;
+
     }
    /* public function inputSanitize( $input )
 	{
@@ -196,6 +257,59 @@ class FieldsCallbacks extends BaseController {
         }
 
     }
+    function cronURL ($args) {
+        $name = $args['label_for'];
+        $classes = $args['class'];
+        $option_name = $args['option_name'];
+        $value =  get_option( $option_name );
+        $isvalue = isset($value[$name]) ? $value[$name]  : '';
+        $this->cron_name = $isvalue;
+
+        echo '<input type="text" class="regular-text" name="'. $option_name.'['.$name.']"  value="' . $isvalue . '"  placeholder="File url">';
+
+
+    }
+    function cronUpload ($args) {
+
+
+
+        $name = $args['label_for'];
+        $classes = $args['class'];
+        $option_name = $args['option_name'];
+        $value =  get_option( $option_name );
+        $isvalue = isset($value[$name]) ? $value[$name]  : '';
+        $this->cron_name = $isvalue;
+
+
+     echo '<input type="file" name="'. $option_name.'" id="hmu_import" value="' . $isvalue . '"  />';
+     //echo get_option("hmu_import");
+
+
+    }
+    function cronFunction ($args) {
+
+        $name = $args['label_for'];
+        $classes = $args['class'];
+        $option_name = $args['option_name'];
+        $value =  get_option( $option_name );
+        $cron_value = isset($value[$name]) ? $value[$name]  : 'Select Function';
+
+
+        echo '
+         <select name="' . $option_name . '[' . $name . ']">
+            <option value="">'.$cron_value.'</option>
+            <option value="insert-location">Insert Locations</option>
+            <option value="insert-users">Insert Users</option>
+             <option value="insert-products">Insert Products</option>
+            <option value="insert-prices">Insert Prices</option>
+            
+           
+          </select><br>
+                       ';
+
+
+    }
+
 
 
 

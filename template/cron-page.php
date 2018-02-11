@@ -14,14 +14,20 @@
 
 <?php settings_errors(); ?>
 
-<form method="post" class="hmu-general-form" action="options.php">
+<form method="post" class="hmu-general-form" action="options.php" enctype="multipart/form-data">
     <?php
     settings_fields( 'hmu_cron_options_group' );
     do_settings_sections( 'cron_task' );
     submit_button( 'Create task', '', 'btnSubmit' );
     ?>
 <?php
+
     @$option  = get_option ('hmu_cron');
+  /*  if( $option['error'] ){
+        echo 'File couldnt be moved';
+        exit();
+
+    }*/
 
 
     $output ="<table class='widefat fixed' cellspacing='0'>\n\n";
@@ -30,6 +36,7 @@
     $output .= "<th > Task ID</th>";
     $output .= "<th> Task Name</th>";
     $output .= "<th> Task Schedule</th>";
+    $output .= "<th> Task Function</th>";
     $output .= "<th> Task Path</th>";
     $output .= "<th> Delete</th>";
 
@@ -44,7 +51,8 @@
                 $output .=  "<td>" . $key . "</td>";
                 $output .=  "<td>" .$value['cron_name']. "</td>";
                 $output .=  "<td>" .$value['cron_time']. "</td>";
-                $output .=  "<td>" .$value['cron_file']. "</td>";
+                $output .=  "<td>" .$value['cron_function']. "</td>";
+                $output .=  "<td>" .(($value['cron_upload'] !='')? $value['cron_upload'] : $value['cron_url'])  . "</td>";
                 $output .=  "<td><a href='".admin_url()."admin.php?page=cron_task&cron_delete=".$key."'><i class='fa fa-close'></i></a></td>";
                 $output .= "</tr>\n";
 
@@ -58,13 +66,6 @@
 
 
 
-    if(@$cron_name):
-
-        echo '<div class="cron-wrapper"><h4>Next Schdeduled Task:
-                </h4>' . $cron_name . '<br>
-                <h4>Frequency: </h4>' . $cron_time.'<br/>
-                <h4>File Path:</h4>'.$cron_file;
-    endif;
 
 
 
@@ -77,26 +78,24 @@
 
 <?php endif; ?>
 <?php
-/*use Inc\Base\Cron;
 
-$cron = new Cron();
-
- $cron->register() ;*/
 
 if(isset($_POST['delete_cron'])){
+
     delete_option( 'hmu_cron' );
     wp_clear_scheduled_hook( 'hmu_upload_file_cron' );
     $default = array();
-
      add_option('hmu_cron', $default);
     $output = get_option('hmu_cron');
     $output = array();
 
 
-    echo 'Tak has been deleted';
+    echo 'Task has been deleted';
 }
-if(isset($_GET['cron_delete'])){
-    echo $id = $_GET['cron_delete'];
+
+if(isset($_GET['cron_delete']) && !empty( $option)){
+
+    $id = $_GET['cron_delete'];
     $option  = get_option ('hmu_cron');
     $option_id = $option[$id];
     $option_id = array();
@@ -107,6 +106,14 @@ if(isset($_GET['cron_delete'])){
 
 
 ?>
+<?php
+
+/*echo '<pre>';
+var_dump(get_option ('hmu_cron'));
+echo '</pre>';*/
+
+
+
 
 
 

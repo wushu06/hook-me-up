@@ -7,7 +7,7 @@
 <div class="wrap">
 <?php settings_errors(); ?>
 
-<form method="post" class="hmu-general-form" action="options.php">
+<form method="post" class="hmu-general-form" action="options.php" enctype="multipart/form-data">
 	<?php 
 		settings_fields( 'hmu_import_options_group' );
 		do_settings_sections( 'import_users' );
@@ -15,7 +15,7 @@
 	?>
 
 </form>
-    <?php echo get_option("hmu_import")["upload_file"]; ?>
+    <?php echo get_option("hmu_import"); ?>
 <?php
 /*$option = get_option ('hmu_import');
 @$picture = $option["profile_picture"];
@@ -26,6 +26,7 @@
 </div>
     <?php /*endif; */?>
 </div>-->
+<?php
 
 
 

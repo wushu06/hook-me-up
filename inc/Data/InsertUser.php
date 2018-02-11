@@ -3,15 +3,27 @@
 namespace Inc\Data;
 
 use \Inc\Base\BaseController;
+use \Inc\Base\Email;
 
 class InsertUser extends BaseController
 {
 
     public $user_id;
-    public $data_check = false;
+    public $dataCheck;
+    public $user_data = array();
+    public $email;
+
+    public function __construct ()
+    {
+        $this->email = new Email();
+
+    }
+
+
 
     function handle_csv($file)
     {
+        $reault_array = array();
 
         //$csv_file                        = 'http://localhost/wp_treehouse/wp-content/plugins/hook-me-up-csv/users.csv';
         // $csv_file = $this->plugin_url.'users.csv';
@@ -19,7 +31,7 @@ class InsertUser extends BaseController
 
         //for checking headers
         // $requiredHeaders                 = array( 'Product id', 'User', 'Price' );
-        $requiredHeaders = array('Username', 'Email', 'First Name', 'Last Name', 'Role');
+        $requiredHeaders = array('Username', 'Email', 'First Name', 'Last Name', 'Role', 'Custom ID', 'Address','City','Post code');
 
         $fptr = fopen($csv_file, 'r');
         $firstLine = fgets($fptr); //get first line of csv file
@@ -52,8 +64,13 @@ class InsertUser extends BaseController
                 $first_name = $slice[2];
                 $last_name = $slice[3];
                 $role = $slice[4];
+                $custom_id = $slice[5];
+                $address = $slice[6];
+                $city = $slice[7];
+                $post_code = $slice[8];
 
-                 $reault_array = $this->insert_update_user($username, $email, $password = NULL, $first_name, $last_name, $role);
+
+                 $reault_array[] = $this->insert_update_user($username, $email, $first_name, $last_name,  $role, $custom_id,$address,$city,$post_code);
 
                    // echo $reault_array['msg'];
                     //echo ($reault_array['check'] == true ? 'Send Email' : 'dont send email');
@@ -68,9 +85,16 @@ class InsertUser extends BaseController
 
     }
 
-    function insert_update_user($username, $email, $password, $first_name, $last_name, $role)
+    function insert_update_user($username, $email, $first_name, $last_name, $role, $custom_id,$address,$city,$post_code)
     {
+
+
+        $this->user_data ['username'] = $username;
+        $this->user_data ['email'] = $email;
+        wp_suspend_cache_addition(true);
+        $password = $this->randomPassword();
         $pass = wp_hash_password($password);
+
         $userdata = array(
             'user_login' => $username,
             'user_pass' => $pass,
@@ -82,92 +106,126 @@ class InsertUser extends BaseController
 
         global $wpdb;
 
-        $count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $wpdb->users WHERE user_email = %s", $email));
+        // getting users by email
+
+        //$count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $wpdb->users WHERE user_email = %s", $email));
+
+        // getting users by username
+
+        $count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $wpdb->users WHERE user_login = %s", $username));
 
 
-        if ($count == 1) {
+        if ($count == 1) { //
+
             $v = get_user_by('login', $username);
             if($v){
+
                 $ID = $v->ID;            }
 
-            $user_id = wp_update_user(array('ID' => @$ID, 'user_login' => $username, 'user_email' => $email, 'first_name'=>$first_name, 'last_name'=>$last_name, 'role'=>$role));
+            $user_id = wp_update_user(array(
+                                        'ID' => @$ID,
+                                        'user_login' => $username,
+                                        'user_email' => $email,
+                                        'first_name'=>$first_name,
+                                        'last_name'=>$last_name,
+                                        'role'=>$role
+                                        ));
+
             if (is_wp_error($user_id)) {
                 $msg =  "There was an error, probably that user doesn't exist";
-                $this->data_check = false;
+                $check = false;
+
             } else {
                 $msg =  ' User has been updated!';
-                $this->data_check = true;
+                $check = true;
+
+
+
             }
+            $havemeta = get_user_meta(31, '_user_custom_id', false);
+
+            if ($havemeta){
+                update_user_meta( $user_id, '_user_custom_id', $custom_id);
+
+
+            } else {
+                add_user_meta( $user_id, '_user_custom_id', $custom_id);
+            }
+
+            update_user_meta( $user_id, 'shipping_address_1', $address);
+            update_user_meta( $user_id, 'billing_address_1', $address);
+            update_user_meta( $user_id, 'shipping_city', $city);
+            update_user_meta( $user_id, 'billing_city', $city);
+            update_user_meta( $user_id, 'shipping_postcode', $post_code);
+            update_user_meta( $user_id, 'billing_postcode', $post_code);
+
+
+
+
         } else {
+
             $user_id = wp_insert_user($userdata);
 
             $msg =  $username . ' New User <br>';
 
             //On success
             if (!is_wp_error($user_id)) {
+
                 $msg = "User created : " . $username . ' ID: ' . $user_id;
-                $this->data_check = true;
-            } else {
-                $msg = "Couldn't create : " . $username . ' ID: ' . $user_id;
-                $this->data_check = false;
-            }
-        }
-        return $result = array('msg'=>$msg, 'check'=>$this->data_check);
 
-        /*$exists = email_exists( $email );
-        if ( $exists ) {
-            $v = get_user_by( 'login', $username );
-            $ID = $v->ID;
-            $user_id = wp_update_user( array( 'ID'=>$ID,'user_login'=>$username, 'user_email' => $email ) );
-            if ( is_wp_error( $user_id ) ) {
-                echo "There was an error, probably that user doesn't exist";
-            } else {
-                echo ' Success!';
-            }        
-        } else {
-            $user_id = wp_insert_user( $userdata ) ;
-            
-            echo $username.' New User <br>';
-            
-            //On success
-            if ( ! is_wp_error( $user_id ) ) {
-                echo "User created : ". $username.' ID: '.$user_id;
-            }      
-        }
-*/
-        /*$blogusers = get_users(  );
-        foreach ( $blogusers as $user ) {
-           
-            $exist_username = $user->user_login;
-           
 
-            if( $exist_username == $username ) {
-                $v = get_user_by( 'login', $username );
-                $ID = $v->ID;
-                echo $exist_username.' username already exists';
-                 // wp_update_user ignores username (user_login) you must call sql to change user_login
-                $user_id = wp_update_user( array( 'ID' => $ID,'user_login'=>$username, 'user_email' => $email ) );
-                if ( is_wp_error( $user_id ) ) {
-                    echo "There was an error, probably that user doesn't exist";
+                if ($this->email->retrieve_password($username)) {
+                    $msg =  "Reset Password link has been sent to ".$email;
+                    $check = true;
                 } else {
-                    echo ' Success!'.$ID;
+                    $msg = "Couldn't send reset password email to ".$email;
+                    $check = false;
                 }
-                
-            }
-            else {
-                $user_id = wp_insert_user( $userdata ) ;
 
-                echo $username.' New User <br>';
-                
-                //On success
-                if ( ! is_wp_error( $user_id ) ) {
-                    echo "User created : ". $username.' ID: '.$user_id;
-                }
-            }
-        }*/
+            } else {
 
+                $msg = "Couldn't create ";
+
+            }
+
+            add_user_meta( $user_id, '_user_custom_id', $custom_id);
+            update_user_meta( $user_id, 'shipping_address_1', $address);
+            update_user_meta( $user_id, 'billing_address_1', $address);
+            update_user_meta( $user_id, 'shipping_city', $city);
+            update_user_meta( $user_id, 'billing_city', $city);
+            update_user_meta( $user_id, 'shipping_postcode', $post_code);
+            update_user_meta( $user_id, 'billing_postcode', $post_code);
+
+
+        }
+
+         return array('username'=>$username,'msg'=>$msg, 'check'=>@$check);
 
     }
+
+    public function randomPassword() {
+        $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+        $pass = array(); //remember to declare $pass as an array
+        $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
+        for ($i = 0; $i < 8; $i++) {
+            $n = rand(0, $alphaLength);
+            $pass[] = $alphabet[$n];
+        }
+        return implode($pass); //turn the array into a string
+    }
+
+
+     /**
+     * Handles sending password retrieval email to user.
+     *
+     * @uses $wpdb WordPress Database object
+     * @param string $user_login User Login or Email
+     * @return bool true on success false on error
+     */
+
+
+
+
 
 }
 

@@ -11,6 +11,7 @@ final class Init {
             Base\Enqueue::class,
             Base\SettingsLinks::class,
             Data\Read::class,
+            Data\InsertUser::class,
             Data\UploadFile::class
 
         ];
