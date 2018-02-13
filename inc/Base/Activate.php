@@ -8,7 +8,7 @@ class Activate {
 
     public static function activate () {
 
-        $roles = array ('5_discount'=>'5% Discount', '10_discount'=>'10% Discount', '15_discount'=>'15% Discount');
+        $roles = array ('tier-one'=>'Tier One', 'tier-two'=>'Tier Two', 'tier-three'=>'Tier Three');
 
         foreach($roles as $name=>$role) {
             add_role( $name, $role );
@@ -36,6 +36,16 @@ class Activate {
 
 		update_option( 'hmu_plugin', $default );
 
+		global $wpdb;
+	    $table = 'wp_posts';
+
+	    $myCustomer = $wpdb->get_row( sprintf("SELECT * FROM %s LIMIT 1", $table) );
+
+	    if(!isset($myCustomer->missing_field)) {
+		    $wpdb->query( sprintf( "ALTER TABLE %s ADD custom_id INT(1) NOT NULL DEFAULT 1", $table) );
+
+
+	    }
 
 
         flush_rewrite_rules();

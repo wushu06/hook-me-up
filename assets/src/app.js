@@ -17,7 +17,7 @@ jQuery(document).ready( function($){
 
     var mediaUploader;
 
-    $('.upload-file').on('click',function(e) {
+    $('#upload-button').on('click',function(e) {
         e.preventDefault();
         if( mediaUploader ){
             mediaUploader.open();
@@ -52,7 +52,7 @@ jQuery(document).ready( function($){
 jQuery(document).ready( function($){
 
 
-    $(".button-primary").on('click', function(e){
+    $(".upload-file").on('click', function(e){
         e.preventDefault();
         var file_csv1 = $('#locationUpload1').prop('files')[0];
         var file_csv2 = $('#locationUpload2').prop('files')[0];
@@ -63,23 +63,23 @@ jQuery(document).ready( function($){
         var file_csv;
 
 
-            if (file_csv1  !==  undefined ) {
+        if (file_csv1  !==  undefined ) {
 
-                file_csv = file_csv1;
+            file_csv = file_csv1;
 
-            }else if  (file_csv2  !== undefined ) {
+        }else if  (file_csv2  !== undefined ) {
 
-                file_csv = file_csv2;
-            }else if  (file_csv3  !== undefined ) {
+            file_csv = file_csv2;
+        }else if  (file_csv3  !== undefined ) {
 
-                file_csv = file_csv3;
-            }else if  (file_csv4 !== undefined ) {
+            file_csv = file_csv3;
+        }else if  (file_csv4 !== undefined ) {
 
-                file_csv = file_csv4;
-            }else if  (file_csv5 !== undefined ) {
+            file_csv = file_csv4;
+        }else if  (file_csv5 !== undefined ) {
 
-                file_csv = file_csv5;
-            }
+            file_csv = file_csv5;
+        }
 
 
 
@@ -122,5 +122,4 @@ jQuery(document).ready( function($){
         });
     });
 });
-
 

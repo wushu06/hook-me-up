@@ -7,7 +7,7 @@
 <?php
     settings_fields( 'hmu_dashboard_options_group' );
     do_settings_sections( 'hmu_plugin' );
-    submit_button( 'Save Settings', '', 'btnSubmit' );
+    submit_button( 'Save Settings', 'hmu-btn hmu-primary', 'btnSubmit' );
 ?>
 
 </form>

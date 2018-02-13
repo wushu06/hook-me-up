@@ -48,18 +48,24 @@ class InsertPriceByUser extends BaseController {
                 $slice                   = explode(',', $str);
                 $product_id              = $slice[ 0 ];
                 $user                    = $slice[ 1 ];
-                $min_qty                     = $slice[ 2 ];
+                $min_qty                 = $slice[ 2 ];
                 $price                   = $slice[ 3 ];
-                $discount_price         = $slice[ 4 ];
-
+                $discount_price          = $slice[ 4 ];
                 $status = null;
+
+	            $count = $wpdb->get_results($wpdb->prepare("SELECT * FROM $wpdb->posts WHERE custom_id = %d AND post_type = 'product'", $product_id ));
+	            $stdInstance =json_decode(json_encode($count),true);
+	            foreach ($stdInstance as $c ){
+		            $product_id =  $c['ID'];
+	            }
+
                 $product = wc_get_product($product_id);
 
                 // cspPrintDebug($product);
                 //check all values valid or not
                 if (floatval($price) || $price==0.0) {
                     //check if product exists or not
-                    if (isset($product->post) && (get_class($product) == 'WC_Product_Simple' && $product->post->post_type == "product")) {
+                    if (isset($product->post) && (get_class($product) == 'WC_Product_Simple' && get_post_type( $product_id  ) == "product")) {
                         if (!isset($fetched_users[$user])) {
                             //get user id
                             $fetched_users[$user] = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$wdm_users} where user_login=%s", $user));
@@ -91,7 +97,8 @@ class InsertPriceByUser extends BaseController {
                                         '%f',
                                         '%d',
                                     ),
-                                    array('%d',
+                                    array(
+                                    	'%d',
                                         '%d')
                                 );
                                 if ($update_price == 0) {
@@ -116,7 +123,7 @@ class InsertPriceByUser extends BaseController {
                                     array(
                                         '%d',
                                         '%d',
-                                        '%s',
+                                        '%d',
                                         '%d',
                                     )
                                 )) {

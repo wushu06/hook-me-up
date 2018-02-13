@@ -31,7 +31,7 @@ class InsertUser extends BaseController
 
         //for checking headers
         // $requiredHeaders                 = array( 'Product id', 'User', 'Price' );
-        $requiredHeaders = array('Username', 'Email', 'First Name', 'Last Name', 'Role', 'Custom ID', 'Address','City','Post code');
+        $requiredHeaders = array('Internal ID','Account Number','Name','Status','Phone','Email','Login Access','Price Level','Pricing Group','Consignment Stock Customer','Postal Code','Billing Address 1','Billing Address 2','Billing Address 3','Shipping Carrier','Primary Contact','Alt. Email','Special Notes');
 
         $fptr = fopen($csv_file, 'r');
         $firstLine = fgets($fptr); //get first line of csv file
@@ -59,18 +59,26 @@ class InsertUser extends BaseController
                 $result = $data; // two sperate arrays
                 $str = implode(',', $result); // join the two sperate arrays
                 $slice = explode(',', $str); // remove ,
-                $username = $slice[0];
-                $email = $slice[1];
-                $first_name = $slice[2];
-                $last_name = $slice[3];
-                $role = $slice[4];
-                $custom_id = $slice[5];
-                $address = $slice[6];
-                $city = $slice[7];
-                $post_code = $slice[8];
+                $ID = $slice[0];
+                $custom_id = $slice[1];
+                $username= $slice[2];
+                $role = $slice[3];
+                $phone = $slice[4];
+                $email = $slice[5];
+                $login_acess = $slice[6];
+                $price_level = $slice[7];
+                $pricing_group = $slice[8];
+                $cons = $slice[9];
+                $post_code = $slice[10];
+                $address = $slice[11];
+	            $city = $slice[12];
+	            $billing_address_3 = $slice[13];
+                $carrier = $slice[14];
+                $alt_email = $slice[15];
+                $special_note = $slice[16];
 
 
-                 $reault_array[] = $this->insert_update_user($username, $email, $first_name, $last_name,  $role, $custom_id,$address,$city,$post_code);
+                 $reault_array[] = $this->insert_update_user($ID ,$custom_id, $username, $role, $phone,$email,$post_code,$address,$city);
 
                    // echo $reault_array['msg'];
                     //echo ($reault_array['check'] == true ? 'Send Email' : 'dont send email');
@@ -85,13 +93,13 @@ class InsertUser extends BaseController
 
     }
 
-    function insert_update_user($username, $email, $first_name, $last_name, $role, $custom_id,$address,$city,$post_code)
+    function insert_update_user($ID ,$custom_id, $username, $role, $phone,   $email,$post_code,$address,$city)
     {
 
 
         $this->user_data ['username'] = $username;
         $this->user_data ['email'] = $email;
-        wp_suspend_cache_addition(true);
+       // wp_suspend_cache_addition(true);
         $password = $this->randomPassword();
         $pass = wp_hash_password($password);
 
@@ -99,8 +107,8 @@ class InsertUser extends BaseController
             'user_login' => $username,
             'user_pass' => $pass,
             'user_email' => $email,
-            'first_name' => $first_name,
-            'last_name' => $last_name,
+            'first_name' => $username,
+            'last_name' => $username,
             'role' => $role
         );
 
@@ -126,8 +134,8 @@ class InsertUser extends BaseController
                                         'ID' => @$ID,
                                         'user_login' => $username,
                                         'user_email' => $email,
-                                        'first_name'=>$first_name,
-                                        'last_name'=>$last_name,
+                                        'first_name'=>$username,
+                                        'last_name'=>$username,
                                         'role'=>$role
                                         ));
 

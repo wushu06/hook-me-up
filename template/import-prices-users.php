@@ -43,11 +43,11 @@ $email = new Email ();
         <div class="container">
 
             <ul class="tabs">
-                <li class="tab-link current" data-tab="tab-1">User Based Prices</li>
-                <li class="tab-link" data-tab="tab-2">Role Based Prices</li>
-                <li class="tab-link" data-tab="tab-3">Import Users</li>
-                <li class="tab-link" data-tab="tab-4">Import Products</li>
-                <li class="tab-link" data-tab="tab-5">Import Locations</li>
+                <li class="tab-link current" data-tab="tab-1"><i class="fas fa-pound-sign"></i> User Based Prices</li>
+                <li class="tab-link" data-tab="tab-2"><i class="fas fa-pound-sign"></i> Role Based Prices</li>
+                <li class="tab-link" data-tab="tab-3"><i class="fas fa-upload"></i> Import Users</li>
+                <li class="tab-link" data-tab="tab-4"><i class="fas fa-truck"></i> Import Products</li>
+                <li class="tab-link" data-tab="tab-5"><i class="fas fa-thumbtack"></i> Import Locations</li>
 
             </ul>
 
@@ -58,9 +58,8 @@ $email = new Email ();
                 <form action="" method="post" enctype="multipart/form-data">
                     <label for="">Insert New Prices(By User):</label><br>
                     <input type="file" name="file_prices_users" id="locationUpload1">
-                    <button id="importTable1" class="upload-file"> Upload File </button>
-                    <input class="btn btn-primary  hidden" type="submit" value="Insert/Update Prices"
-                           name="submit_prices_users">
+                    <button id="importTable1" class="upload-file hmu-btn"> Upload File </button>
+                    <input class="hmu-input hmu-primary  hidden" type="submit" value="Insert/Update Prices"  name="submit_prices_users">
                 </form>
 
 
@@ -71,8 +70,8 @@ $email = new Email ();
                 <form action="" method="post" enctype="multipart/form-data">
                     <label for="">Insert New Products(By Role):</label><br>
                     <input type="file" name="file_price_role" id="locationUpload2">
-                    <button id="importTable2" class="upload-file"> Upload File </button>
-                    <input class="btn btn-primary hidden" type="submit" value="Insert/Update Prices" name="submit_prices_role">
+                    <button id="importTable2" class="upload-file hmu-btn"> Upload File </button>
+                    <input class="hmu-input hmu-primary  hidden" type="submit" value="Insert/Update Prices" name="submit_prices_role">
                 </form>
             </div>
 
@@ -81,8 +80,8 @@ $email = new Email ();
                 <form action="" method="post" enctype="multipart/form-data">
                     <label for="">Insert Users:</label><br>
                     <input type="file" name="file_users" id="locationUpload3">
-                    <button id="importTable3" class="upload-file"> Upload File </button>
-                    <input class="btn btn-primary hidden" type="submit" value="Insert/Update Users" name="submit_users">
+                    <button id="importTable3" class="upload-file hmu-btn"> Upload File </button>
+                    <input class="hmu-input hmu-primary  hidden" type="submit" value="Insert/Update Users" name="submit_users">
                 </form>
 
             </div>
@@ -93,8 +92,8 @@ $email = new Email ();
                 <form action="" method="post" enctype="multipart/form-data">
                     <label for="">Import Products:</label><br>
                     <input type="file" name="file_products" id="locationUpload4">
-                    <button id="importTable4" class="upload-file"> Upload File </button>
-                    <input class="btn btn-primary hidden" type="submit" value="Insert/Update Products" name="submit_products">
+                    <button id="importTable4" class="upload-file hmu-btn"> Upload File </button>
+                    <input class="hmu-input hmu-primary  hidden" type="submit" value="Insert/Update Products" name="submit_products">
                 </form>
             </div>
 
@@ -102,9 +101,9 @@ $email = new Email ();
 
                 <form action=""   method="post" enctype="multipart/form-data">
                     <label for="">Import Locations:</label><br>
-                    <input type="file" name="file_locations" id="locationUpload5">
-                    <button id="importTable" class="upload-file"> Upload File </button>
-                    <input class="btn btn-primary hidden" type="submit" value="Insert/Update Locations" name="submit_locations">
+                    <input  type="file" name="file_locations" id="locationUpload5">
+                    <button id="importTable" class="upload-file hmu-btn"> Upload File </button>
+                    <input class="hmu-input hmu-primary  hidden" type="submit" value="Insert/Update Locations" name="submit_locations">
                 </form>
 
             </div>
@@ -125,7 +124,11 @@ $email = new Email ();
 
             echo '<h1>Upload Prices By User</h1>';
             $FILE_POST = $_FILES["file_prices_users"]['tmp_name'];
-            echo $submit->submit_data( 'submit_prices_users', $FILE_POST);
+	        $result = $submit->submit_data( 'submit_prices_users', $FILE_POST);
+	        foreach ($result as $key => $value ) {
+		        echo $value;
+	        }
+
 
 
         }
@@ -138,7 +141,10 @@ $email = new Email ();
             //  echo    $csv_file                        = $this->plugin_url.'user_price.csv';
             //$file = $this->plugin_path.'price.csv';
             $FILE_POST = $_FILES["file_price_role"]['tmp_name'];
-            echo $submit->submit_data( 'submit_prices_role', $FILE_POST);
+	        $result = $submit->submit_data( 'submit_prices_role', $FILE_POST);
+	        foreach ($result as $key => $value ) {
+		        echo $value;
+	        }
         }
 
 
@@ -194,31 +200,28 @@ $email = new Email ();
 
 
         if (isset($_POST["submit_products"]) && !empty($_FILES["file_products"]["name"]) ) {?>
-            <div class="notice notice-success is-dismissible">
-                <h1>Products Uploaded:</h1>
-            </div>
+
             <?php
             // $file = $this->plugin_path.'new.csv';
              $FILE_POST = $_FILES["file_products"]['tmp_name'];
               $result =  $submit->submit_data( 'submit_products', $FILE_POST);
-            foreach ($result as $key => $value ) {
-                echo $value;
-            }
+              if($result) { ?>
+                <div class="notice notice-success is-dismissible">
+                    <h1>Products Uploaded:</h1>
+                </div>
+                <div class="hmu-result  ">
+	             <?php foreach ($result as $key => $value ) {?>
+
+	                    <?php   echo $value; ?>
+
+	             <?php }?>
+                  </div>
+              <?php }
+
 
 
         }
 
-
-      /*  if (isset($_POST["submit_locations"]) && !empty($_FILES["file_locations"]["name"]) ) {*/?><!--
-            <div class="notice notice-success is-dismissible">
-                <h1>Locations Uploaded:</h1>
-            </div>
-            --><?php
-/*	        $FILE_POST = $_FILES["file_locations"];
-	        echo $submit->submit_data($FILE_POST, 'submit_locations');
-
-
-        }*/
         if (isset($_POST["submit_locations"]) ) {
              ?>
             <div class="notice notice-success is-dismissible">
@@ -236,8 +239,9 @@ $email = new Email ();
 
         ?>
     </div>
+
     <form action="" method="post">
-        <input class="btn btn-primary" type="submit" value="Send result to the admin's email" name="send_email">
+        <input class=" hmu-input hmu-success" type="submit" value="Send result to the admin's email" name="send_email">
         <input type="hidden" value="<?php if(isset($email_results )){ foreach ($email_results as $key=>$email_result ){echo $email_result.', ';}} ?>" name="username">
     </form>
 
@@ -245,9 +249,5 @@ $email = new Email ();
 
 
 
-
-if (isset($_POST["send_email"] ) ) {
-    echo $email->hmu_send_admin_email();
-}
 
 

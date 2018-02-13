@@ -231,7 +231,7 @@ class FieldsCallbacks extends BaseController {
         $isvalue = isset($value[$name]) ? $value[$name]  : '';
         $this->cron_name = $isvalue;
 
-            echo '<input type="text" class="regular-text" name="'. $option_name.'['.$name.']"  value="' . $isvalue . '"  placeholder="Name of the task">';
+            echo '<input type="text" class="regular-text hmu-input" name="'. $option_name.'['.$name.']"  value="' . $isvalue . '"  placeholder="Name of the task">';
 
 
     }
@@ -265,7 +265,7 @@ class FieldsCallbacks extends BaseController {
         $isvalue = isset($value[$name]) ? $value[$name]  : '';
         $this->cron_name = $isvalue;
 
-        echo '<input type="text" class="regular-text" name="'. $option_name.'['.$name.']"  value="' . $isvalue . '"  placeholder="File url">';
+        echo '<input type="text" class="regular-text hmu-input" name="'. $option_name.'['.$name.']"  value="' . $isvalue . '"  placeholder="File url">';
 
 
     }
@@ -281,7 +281,7 @@ class FieldsCallbacks extends BaseController {
         $this->cron_name = $isvalue;
 
 
-     echo '<input type="file" name="'. $option_name.'" id="hmu_import" value="' . $isvalue . '"  />';
+     echo '<input  type="file" name="'. $option_name.'" id="hmu_import" value="' . $isvalue . '"  />';
      //echo get_option("hmu_import");
 
 

@@ -20,7 +20,7 @@ class InsertLocations
 
 
 		//for checking headers
-		$requiredHeaders = array("location name","postcode","locaiton address","city","country");
+		$requiredHeaders = array('Internal ID','Account Number','Name','Status','Phone','Email','Login Access','Price Level','Pricing Group','Consignment Stock Customer','Postal Code','Billing Address 1','Billing Address 2','Billing Address 3','Shipping Carrier','Primary Contact','Alt. Email','Special Notes');
 
 		$fptr = fopen($csv_file, 'r');
 		$firstLine = fgets($fptr); //get first line of csv file
@@ -52,13 +52,26 @@ class InsertLocations
 				$result = $data; // two sperate arrays
 				$str = implode(',', $result); // join the two sperate arrays
 				$slice = explode(',', $str); // remove ,
-				$location_name = $slice[0];
-				$location_postcode = $slice[1];
-				$location_address = $slice[2];
-				$location_city = $slice[3];
-				$location_country = $slice[4];
 
-				$reault_array = $this->insert_update_locations($location_name, $location_postcode, $location_address, $location_city, $location_country);
+				$ID = $slice[0];
+				$custom_id = $slice[1];
+				$location_name = $slice[2];
+				$role = $slice[3];
+				$phone = $slice[4];
+				$email = $slice[5];
+				$login_acess = $slice[6];
+				$price_level = $slice[7];
+				$pricing_group = $slice[8];
+				$cons = $slice[9];
+				$location_postcode = $slice[10];
+				$location_address = $slice[11];
+				$location_city = $slice[12];
+				$billing_address_3 = $slice[13];
+				$carrier = $slice[14];
+				$alt_email = $slice[15];
+				$special_note = $slice[16];
+
+				$reault_array = $this->insert_update_locations($location_name, $location_postcode, $location_address, $location_city, $location_country='United Kingdom');
 
 
 

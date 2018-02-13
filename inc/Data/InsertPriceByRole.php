@@ -45,25 +45,31 @@ class InsertPriceByRole extends BaseController {
             $insert_cnt  = 0;
             $count=0;
             while (false !== ($data      = fgetcsv($getfile, 1000, ','))) {
+
                 $count++;
                 $result                  = $data;
                 $str                     = implode(',', $result);
                 $slice                   = explode(',', $str);
                 $product_id              = $slice[ 0 ];
-                // $user                    = $slice[ 1 ];
                 $role                    = $slice[ 1 ];
-                $min_qty                     = $slice[ 2 ];
+                $min_qty                 = $slice[ 2 ];
                 $price                   = $slice[ 3 ];
-                $discount_price         = $slice[ 4 ];
-
+                $discount_price          = $slice[ 4 ];
                 $status = null;
-                $product = wc_get_product($product_id);
+
+
+	            $count = $wpdb->get_results($wpdb->prepare("SELECT * FROM $wpdb->posts WHERE custom_id = %d AND post_type = 'product'", $product_id ));
+	            $stdInstance =json_decode(json_encode($count),true);
+	            foreach ($stdInstance as $c ){
+		            $product_id =  $c['ID'];
+	            }
+	            $product = wc_get_product($product_id);
 
                 // cspPrintDebug($product);
                 //check all values valid or not
                 if (floatval($price) || $price==0.0) {
                     //check if product exists or not
-                    if (isset($product->post) && (get_class($product) == 'WC_Product_Simple' && $product->post->post_type == "product")) {
+                    if (isset($product->post) && (get_class($product) == 'WC_Product_Simple' && get_post_type( $product_id  ) == "product")) {
                         /*  if (!isset($fetched_users[$user])) {
                               //get user id
                               $fetched_users[$user] = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$wdm_users} where user_login=%s", $user));
@@ -73,7 +79,8 @@ class InsertPriceByRole extends BaseController {
 
 
                         //Update price for existing one
-                        $result = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$wdm_user_product_role_mapping} where product_id=%d", $product_id));
+                       // $result = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$wdm_user_product_role_mapping} where product_id=%d", $product_id));
+	                    $result =  $wpdb->get_row($wpdb->prepare("SELECT * from {$wdm_user_product_role_mapping} WHERE role = '%s' AND product_id = %d ", $role, intval($product_id)));
                         if ($result != null) {
 
                             $update_price = $wpdb->update(
@@ -83,16 +90,16 @@ class InsertPriceByRole extends BaseController {
                                     'flat_or_discount_price' => $discount_price ,
                                     'min_qty' => $min_qty
                                 ),
-                                array(
-                                    'product_id' => $product_id
-
-                                ),
+	                            array(
+		                            'id' => $result->id,
+	                            ),
 
                                 array(
                                     '%f',
                                     '%d',
                                 ),
-                                array('%d',
+                                array(
+                                	'%d',
                                     '%d')
                             );
                             if ($update_price == 0) {
@@ -108,19 +115,20 @@ class InsertPriceByRole extends BaseController {
                             $msg = "did not find product";
                             //add entry in our table
                             if ($wpdb->insert(
+
                                 $wdm_user_product_role_mapping,
                                 array(
                                     'product_id' => $product_id,
-                                    'role' => $min_qty,
-                                    'min_qty' => $role,
+                                    'role' => $role,
+                                    'min_qty' => $min_qty,
                                     'price' => $price,
                                     'flat_or_discount_price' =>$discount_price ,
                                 ),
                                 array(
                                     '%d',
-                                    '%d',
-                                    '%d',
                                     '%s',
+                                    '%d',
+                                    '%d',
                                     '%d',
                                 )
                             )) {

@@ -18,7 +18,7 @@
     <?php
     settings_fields( 'hmu_cron_options_group' );
     do_settings_sections( 'cron_task' );
-    submit_button( 'Create task', '', 'btnSubmit' );
+    submit_button( 'Create task', 'hmu-btn', 'btnSubmit' );
     ?>
 <?php
 
@@ -73,7 +73,7 @@
 
 </form>
     <form method="POST" action="">
-        <input name="delete_cron" type="submit" value="Delete cron task">
+        <input class="hmu-input hmu-delete" name="delete_cron" type="submit" value="Delete cron task">
     </form>
 
 <?php endif; ?>

@@ -28,10 +28,10 @@ class Submit
         //$file = $read->upload_csv_file($FILE_POST);
 
         if( $POST == 'submit_prices_users'):
-            $output_array   = $insert_by_user->insert_update_by_user($file);
+            $output   = $insert_by_user->insert_update_by_user($file);
            // $output .= $read->read_prices_file($file);
          elseif( $POST == 'submit_prices_role') :
-             $output_array   = $insert_by_role->insert_update_by_role($file);
+             $output   = $insert_by_role->insert_update_by_role($file);
            //  $output  .= $read->read_prices_file($file);
          elseif( $POST == 'submit_users') :
              $output =  $insert_users->handle_csv($file);
