@@ -39,9 +39,9 @@ class Activate {
 		global $wpdb;
 	    $table = 'wp_posts';
 
-	    $myCustomer = $wpdb->get_row( sprintf("SELECT * FROM %s LIMIT 1", $table) );
+	    $custom_id = $wpdb->get_row( sprintf("SELECT * FROM %s LIMIT 1", $table) );
 
-	    if(!isset($myCustomer->missing_field)) {
+	    if(!isset($custom_id->missing_field)) {
 		    $wpdb->query( sprintf( "ALTER TABLE %s ADD custom_id INT(1) NOT NULL DEFAULT 1", $table) );
 
 

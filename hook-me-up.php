@@ -80,4 +80,3 @@ function hmu_update_user_meta() {
 add_action( 'personal_options_update', 'hmu_update_user_meta' );
 add_action( 'edit_user_profile_update', 'hmu_update_user_meta' );
 
-
