@@ -22,7 +22,7 @@
     ?>
 <?php
 
-    @$option  = get_option ('hmu_cron');
+    if($option  = get_option ('hmu_cron') != NULL ):
   /*  if( $option['error'] ){
         echo 'File couldnt be moved';
         exit();
@@ -46,7 +46,7 @@
 
 
 
-            foreach ($option as $key => $value) {
+            foreach (@$option as $key => $value) {
                 $output .= "<tr>\n";
                 $output .=  "<td>" . $key . "</td>";
                 $output .=  "<td>" .$value['cron_name']. "</td>";
@@ -64,7 +64,7 @@
     echo $output;
 
 
-
+endif;
 
 
 

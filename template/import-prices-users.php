@@ -425,24 +425,3 @@ function attach_image_l ($product_wp_id, $filename)
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

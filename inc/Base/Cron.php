@@ -13,7 +13,8 @@ class Cron
 
     public function register()
     {
-        @$this->option  = get_option ('hmu_cron');
+
+        if(@$this->option  = get_option ('hmu_cron') != NULL )
 
         foreach (@$this->option  as $key => $value) {
 
@@ -36,6 +37,7 @@ class Cron
                 wp_clear_scheduled_hook( $cron_name  );
             }
         }
+
 
 
     }

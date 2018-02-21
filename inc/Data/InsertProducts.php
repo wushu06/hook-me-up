@@ -17,7 +17,7 @@ class InsertProducts
         $csv_file = $file;
 
         //for checking headers
-        $requiredHeaders = array('Internal ID','Product Code','Suggested Name','Agent','Website Category','Sub-brand','Description','Short Description','Certification','Toolkit');
+        $requiredHeaders = array('Internal ID','Product Code','Suggested Name','Agent','Website Category','Sub-Category','Sub-brand','Description','Fire Rating','Short Description','Certification','Toolkit');
 
         $fptr = fopen($csv_file, 'r');
         $firstLine = fgets($fptr); //get first line of csv file
@@ -25,13 +25,13 @@ class InsertProducts
         $foundHeaders = str_getcsv(trim($firstLine), ',', '"'); //parse to array
 
 
-        //check the headers of file
-       /* if ($foundHeaders !== $requiredHeaders) {
-            echo 'File Header not the same';
-            die();
-        }**/
+//check the headers of file
+        /* if ($foundHeaders !== $requiredHeaders) {
+             echo 'File Header not the same';
+             die();
+         }**/
         $getfile = fopen($csv_file, 'r');
-        //$users     = array();
+//$users     = array();
         if (false !== ($getfile = fopen($csv_file, 'r'))) {
 
             $data = fgetcsv($getfile, 1000, ',');
@@ -42,32 +42,33 @@ class InsertProducts
             $insert_cnt = 0;
             $count = 0;
             while (false !== ($data = fgetcsv($getfile, 1000, ','))) {
-	            if ($data[0] != NULL) {  // ignore blank lines
-		            $count++;
-		            $result = $data; // two sperate arrays
-		           // $str = implode(',', $result); // join the two sperate arrays
-		            //$slice = explode(',', $str); // remove ,
-		            $slice = $result;
+                if ($data[0] != NULL) {  // ignore blank lines
+                    $count++;
+                    $result = $data; // two sperate arrays
+                    // $str = implode(',', $result); // join the two sperate arrays
+                    //$slice = explode(',', $str); // remove ,
+                    $slice = $result;
 
-		            //variables
-		            $netsuite_id = $slice[0];
-		            $product_code = $slice[1];
-		            $post_title = $slice[2];
-		            $agent = $slice[3];
-		            $cat = $slice[4];
-		            $sub_brand = $slice[5];
-		            $description = $slice[6];
-		            $shortdesc = $slice[7];
-		            $cert = $slice[8];
-		            //$filename = $slice[12];
-
-
-		            $reault_array [] = $this->insert_update_products($netsuite_id, $post_title,$agent, $cat, $sub_brand, $description,$shortdesc);
+                    //variables
+                    $netsuite_id = $slice[0];
+                    $product_code = $slice[1];
+                    $post_title = $slice[2];
+                    $agent = $slice[3];
+                    $cat = $slice[4];
+                    $sub_cat = $slice[5];
+                    $sub_brand = $slice[6];
+                    $description = $slice[7];
+                    $shortdesc = $slice[8];
+                    $cert = $slice[9];
+                    //$filename = $slice[12];
 
 
+                    $reault_array [] = $this->insert_update_products($netsuite_id, $post_title,$agent, $cat,$sub_cat, $sub_brand, $description,$shortdesc);
 
 
-	            }//if empty lines
+
+
+                }//if empty lines
 
 
             }//end of while
@@ -76,6 +77,7 @@ class InsertProducts
 
 
         }
+
         return $reault_array;
 
 
@@ -92,7 +94,7 @@ class InsertProducts
 		return $string;
 	}
 
-    function insert_update_products($netsuite_id, $post_title,$agent, $cat, $sub_brand, $description,$shortdesc)
+    function insert_update_products($netsuite_id, $post_title,$agent, $cat,$sub_cat, $sub_brand, $description,$shortdesc)
     {
         //wp_suspend_cache_addition(true);
 
@@ -186,7 +188,7 @@ class InsertProducts
           $cat_slug = $this->seoUrl($cat);
           //wp_set_post_terms( $product_id, $cat_slug, 'product_cat', true );
          // wp_set_post_terms($product_id, $cat_slug, 'product_cat');
-	    $searchString = ',';
+	/*    $searchString = ',';
 
 	    if( strpos($cat, $searchString) !== false ) {
 		    $arr = explode(",", $cat, 2);
@@ -197,32 +199,63 @@ class InsertProducts
 
 	    }else {
 		    wp_set_object_terms( $product_wp_id , $cat, 'product_cat', true);
-	    }
+	    }*/
+           wp_set_object_terms( $product_wp_id , $cat, 'product_cat', true);
 
 	       wp_set_object_terms( $product_wp_id, $sub_brand, 'brands', true);
 
 
 	    // insert child cat (agent)
-	    $child_exist =  term_exists( $agent, 'product_cat' );
+        if($agent) {
+            $child_exist =  term_exists( $agent, 'product_cat' );
 
-	    if($child_exist) {
-		    wp_set_post_terms( $product_wp_id,$child_exist['term_id'],  'product_cat' );
+            if($child_exist) {
+                wp_set_post_terms( $product_wp_id,$child_exist['term_id'],  'product_cat' );
 
-	    }else {
-		    $parent_term = term_exists( 'fire-extinguishers', 'product_cat' ); // array is returned if taxonomy is given
-		    $parent_term_id = $parent_term['term_id'];         // get numeric term id
+            }else {
+                $parent_term = term_exists( 'fire-extinguishers', 'product_cat' ); // array is returned if taxonomy is given
+                $parent_term_id = $parent_term['term_id'];         // get numeric term id
 
-		    $child_term = wp_insert_term(
-			    $agent,   // the term
-			    'product_cat', // the taxonomy
-			    array(
-				    'parent'      => $parent_term_id,
-			    )
-		    );
+                $child_term = wp_insert_term(
+                    $agent,   // the term
+                    'product_cat', // the taxonomy
+                    array(
+                        'parent'      => $parent_term_id,
+                    )
+                );
 
-		    $agent_id = $child_term['term_id'];
-		    wp_set_post_terms( $product_wp_id,$agent_id,  'product_cat' );
-	    }
+                $agent_id = $child_term['term_id'];
+                wp_set_post_terms( $product_wp_id,$agent_id,  'product_cat' );
+            }
+
+        }
+
+
+        if($sub_cat) {
+            // insert sub categories
+            $sub_cat_exist =  term_exists( $sub_cat, 'product_cat' );
+
+            if( $sub_cat_exist ) {
+                wp_set_post_terms( $product_wp_id,$sub_cat_exist['term_id'],  'product_cat' );
+
+            }else {
+                $parent_term = term_exists( $cat, 'product_cat' ); // array is returned if taxonomy is given
+                $parent_term_id = $parent_term['term_id'];         // get numeric term id
+
+                $child_term = wp_insert_term(
+                    $sub_cat,   // the term
+                    'product_cat', // the taxonomy
+                    array(
+                        'parent'      => $parent_term_id,
+                    )
+                );
+
+                $sub_id = $child_term['term_id'];
+                wp_set_post_terms( $product_wp_id,$sub_id,  'product_cat' );
+            }
+
+        }
+
 
 
 
