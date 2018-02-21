@@ -48,30 +48,32 @@ class InsertLocations
 			$insert_cnt = 0;
 			$count = 0;
 			while (false !== ($data = fgetcsv($getfile, 1000, ','))) {
-				$count++;
-				$result = $data; // two sperate arrays
-				$str = implode(',', $result); // join the two sperate arrays
-				$slice = explode(',', $str); // remove ,
+				if ($data[0] != NULL) {  // ignore blank lines
+					$count++;
+					$result = $data; // two sperate arrays
+					$str = implode(',', $result); // join the two sperate arrays
+					$slice = explode(',', $str); // remove ,
 
-				$ID = $slice[0];
-				$custom_id = $slice[1];
-				$location_name = $slice[2];
-				$role = $slice[3];
-				$phone = $slice[4];
-				$email = $slice[5];
-				$login_acess = $slice[6];
-				$price_level = $slice[7];
-				$pricing_group = $slice[8];
-				$cons = $slice[9];
-				$location_postcode = $slice[10];
-				$location_address = $slice[11];
-				$location_city = $slice[12];
-				$billing_address_3 = $slice[13];
-				$carrier = $slice[14];
-				$alt_email = $slice[15];
-				$special_note = $slice[16];
+					$ID = $slice[0];
+					$custom_id = $slice[1];
+					$location_name = $slice[2];
+					$role = $slice[3];
+					$phone = $slice[4];
+					$email = $slice[5];
+					$login_acess = $slice[6];
+					$price_level = $slice[7];
+					$pricing_group = $slice[8];
+					$cons = $slice[9];
+					$location_postcode = $slice[10];
+					$location_address = $slice[11];
+					$location_city = $slice[12];
+					$billing_address_3 = $slice[13];
+					$carrier = $slice[14];
+					$alt_email = $slice[15];
+					$special_note = $slice[16];
 
-				$reault_array = $this->insert_update_locations($location_name, $location_postcode, $location_address, $location_city, $location_country='United Kingdom');
+					$reault_array = $this->insert_update_locations($location_name, $location_postcode, $location_address, $location_city, $location_country = 'United Kingdom');
+				}
 
 
 

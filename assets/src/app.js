@@ -59,6 +59,7 @@ jQuery(document).ready( function($){
         var file_csv3 = $('#locationUpload3').prop('files')[0];
         var file_csv4 = $('#locationUpload4').prop('files')[0];
         var file_csv5 = $('#locationUpload5').prop('files')[0];
+        var file_csv5 = $('#locationUpload6').prop('files')[0];
         var btn = $(this);
         var file_csv;
 

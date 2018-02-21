@@ -85,4 +85,17 @@ class Email
     }
 
 
+	public function send_update_email($user_email, $role)
+	{
+	    $message = 'You have been assigned new Role: '.$role;
+        $to = $user_email;
+        $subject = get_bloginfo('name').' Users Update';
+        $headers[] = 'From: '.get_bloginfo('name').' <'.$user_email.'>';
+        wp_mail($to, $subject, $message, $headers);
+
+        return $msg = 'email was sent';
+
+	}
+
+
 }

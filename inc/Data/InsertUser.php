@@ -55,35 +55,36 @@ class InsertUser extends BaseController
             $insert_cnt = 0;
             $count = 0;
             while (false !== ($data = fgetcsv($getfile, 1000, ','))) {
-                $count++;
-                $result = $data; // two sperate arrays
-                $str = implode(',', $result); // join the two sperate arrays
-                $slice = explode(',', $str); // remove ,
-                $ID = $slice[0];
-                $custom_id = $slice[1];
-                $username= $slice[2];
-                $role = $slice[3];
-                $phone = $slice[4];
-                $email = $slice[5];
-                $login_acess = $slice[6];
-                $price_level = $slice[7];
-                $pricing_group = $slice[8];
-                $cons = $slice[9];
-                $post_code = $slice[10];
-                $address = $slice[11];
-	            $city = $slice[12];
-	            $billing_address_3 = $slice[13];
-                $carrier = $slice[14];
-                $alt_email = $slice[15];
-                $special_note = $slice[16];
+	            if ($data[0] != NULL) {  // ignore blank lines
+		            $count++;
+		            $result = $data; // two sperate arrays
+		            $str = implode(',', $result); // join the two sperate arrays
+		            $slice = explode(',', $str); // remove ,
+		            $ID = $slice[0];
+		            $custom_id = $slice[1];
+		            $username = $slice[2];
+		            $role = $slice[3];
+		            $phone = $slice[4];
+		            $email = $slice[5];
+		            $login_acess = $slice[6];
+		            $price_level = $slice[7];
+		            $pricing_group = $slice[8];
+		            $cons = $slice[9];
+		            $post_code = $slice[10];
+		            $address = $slice[11];
+		            $city = $slice[12];
+		            $billing_address_3 = $slice[13];
+		            $carrier = $slice[14];
+		            $alt_email = $slice[15];
+		            $special_note = $slice[16];
 
 
-                 $reault_array[] = $this->insert_update_user($ID ,$custom_id, $username, $role, $phone,$email,$post_code,$address,$city);
+		            $reault_array[] = $this->insert_update_user($ID, $custom_id, $username, $role, $phone, $email, $post_code, $address, $city);
 
-                   // echo $reault_array['msg'];
-                    //echo ($reault_array['check'] == true ? 'Send Email' : 'dont send email');
+		            // echo $reault_array['msg'];
+		            //echo ($reault_array['check'] == true ? 'Send Email' : 'dont send email');
 
-
+	            }
 
             }//end of while
 
@@ -128,7 +129,22 @@ class InsertUser extends BaseController
             $v = get_user_by('login', $username);
             if($v){
 
-                $ID = $v->ID;            }
+                $ID = $v->ID;
+
+	            $user_meta=get_userdata($ID);
+	            $user_roles=$user_meta->roles;
+	            if (!in_array($role, $user_roles)){
+		            //  $msg = $this->email->send_update_email($email, $role);
+		            $message = 'You have been assigned new Role: '.$role;
+		            $to = $email;
+		            $subject = get_bloginfo('name').' Users Update';
+		            $headers[] = 'From: '.get_bloginfo('name').' <'.$email.'>';
+		            wp_mail($to, $subject, $message, $headers);
+
+		            $msg = 'email was sent';
+	            }
+
+            }
 
             $user_id = wp_update_user(array(
                                         'ID' => @$ID,
@@ -146,6 +162,7 @@ class InsertUser extends BaseController
             } else {
                 $msg =  ' User has been updated!';
                 $check = true;
+
 
 
 

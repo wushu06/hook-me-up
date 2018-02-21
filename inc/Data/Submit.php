@@ -7,6 +7,7 @@ use Inc\Data\InsertPriceByUser;
 use Inc\Data\InsertPriceByRole;
 use Inc\Data\InsertUser;
 use Inc\Data\InsertProducts;
+use Inc\Data\InsertImage;
 
 class Submit
 {
@@ -23,6 +24,7 @@ class Submit
         $insert_users = new InsertUser();
         $insert_products = new InsertProducts();
 	    $insert_locations = new InsertLocations();
+	    $insert_images = new InsertImage();
 
 
         //$file = $read->upload_csv_file($FILE_POST);
@@ -41,6 +43,9 @@ class Submit
            // $output  = $read->read_products_file($file);
         elseif( $POST == 'submit_locations') :
 	         $insert_locations->handle_csv($file);
+        elseif( $POST == 'submit_images') :
+	        // $insert_images->handle_csv($file);
+	        $output = $insert_images->insert_image_folder();
 
 
 	       // $output  = $read->read_locations_file($file);
