@@ -277,8 +277,30 @@ $image = new InsertImage();
     </form>
 
 <?php
+global $wpdb;
+
+$custom_id = 'dsx';
+$userdata = array(
+	'user_login' => 'testnew',
+	'user_pass' => '12345',
+	'user_email' => 'nour@g.com',
+);
 
 
+
+
+
+
+
+
+
+
+
+/*function get_duplicates ($array) {
+	return array_unique( array_diff_assoc( $array, array_unique( $array ) ) );
+}
+
+var_dump(get_duplicates ($a));*/
 
 function get_products_images(){
 
@@ -332,13 +354,13 @@ function get_products_images(){
 
             $images = array(
                 array(
-                    'url' => $g_one
+                    'url' => @$g_one
                 ),
                 array(
-                    'url' =>$g_two
+                    'url' =>@$g_two
                 ),
                 array(
-                    'url' =>$g_three
+                    'url' =>@$g_three
                 )
             );
 

@@ -22,7 +22,7 @@ class InsertPriceByRole extends BaseController {
 
         //for checking headers
         // $requiredHeaders                 = array( 'Product id', 'User', 'Price' );
-        $requiredHeaders                 = array( 'Product id', 'role', 'Min Qty', 'Flat','%' );
+        $requiredHeaders                 = array( 'Internal ID', 'Min Quantity', 'Feed Name', 'Role','Price' );
 
         $fptr                               = fopen($csv_file, 'r');
         $firstLine                       = fgets($fptr); //get first line of csv file
@@ -50,15 +50,17 @@ class InsertPriceByRole extends BaseController {
 		            $result = $data;
 		            $str = implode(',', $result);
 		            $slice = explode(',', $str);
-		            $product_id = $slice[0];
-		            $role = $slice[1];
-		            $min_qty = $slice[2];
-		            $price = $slice[3];
-		            $discount_price = $slice[4];
-		            $status = null;
+
+		           $netsuite_id = $slice[0];
+		            $min_qty = $slice[1];
+		            $user = $slice[2];
+		            $role =  strtolower(str_replace([" ", " "], '-',$slice[3]));
+		            $price = trim(str_replace('£','',$slice[4]));
 
 
-		            $count = $wpdb->get_results($wpdb->prepare("SELECT * FROM $wpdb->posts WHERE custom_id = %d AND post_type = 'product'", $product_id));
+
+
+		            $count = $wpdb->get_results($wpdb->prepare("SELECT * FROM $wpdb->posts WHERE custom_id = %d AND post_type = 'product'", $netsuite_id));
 		            $stdInstance = json_decode(json_encode($count), true);
 		            foreach ($stdInstance as $c) {
 			            $product_id = $c['ID'];
@@ -67,7 +69,7 @@ class InsertPriceByRole extends BaseController {
 
 		            // cspPrintDebug($product);
 		            //check all values valid or not
-		            if (floatval($price) || $price == 0.0) {
+
 			            //check if product exists or not
 			            if (isset($product->post) && (get_class($product) == 'WC_Product_Simple' && get_post_type($product_id) == "product")) {
 				            /*  if (!isset($fetched_users[$user])) {
@@ -75,29 +77,28 @@ class InsertPriceByRole extends BaseController {
 								  $fetched_users[$user] = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$wdm_users} where user_login=%s", $user));
 							  }*/
 				            //$get_user_id = $fetched_users[$user];
-
+				            $discount_price = 0;
 
 				            //Update price for existing one
 				            // $result = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$wdm_user_product_role_mapping} where product_id=%d", $product_id));
-				            $result = $wpdb->get_row($wpdb->prepare("SELECT * from {$wdm_user_product_role_mapping} WHERE role = '%s' AND product_id = %d ", $role, intval($product_id)));
+				            $result = $wpdb->get_row($wpdb->prepare("SELECT * from {$wdm_user_product_role_mapping} WHERE role = '%s' AND product_id = %d  AND price =%d", $role, intval($product_id), $price));
 				            if ($result != null) {
+
 
 					            $update_price = $wpdb->update(
 						            $wdm_user_product_role_mapping,
 						            array(
 							            'price' => $price,
-							            'flat_or_discount_price' => $discount_price,
-							            'min_qty' => $min_qty
+							            'flat_or_discount_price' => 0,
+							            'min_qty' => 1
 						            ),
 						            array(
 							            'id' => $result->id,
+
 						            ),
 
 						            array(
 							            '%f',
-							            '%d',
-						            ),
-						            array(
 							            '%d',
 							            '%d')
 					            );
@@ -127,7 +128,7 @@ class InsertPriceByRole extends BaseController {
 							            '%d',
 							            '%s',
 							            '%d',
-							            '%d',
+							            '%f',
 							            '%d',
 						            )
 					            )) {
@@ -140,14 +141,12 @@ class InsertPriceByRole extends BaseController {
 					            }
 				            }
 
+
 			            } else {
 				            $this->data_check = false;
 				            $msg = __('Either Product does not exist or not supported', 'customer-specific-pricing-lite');
 			            }
-		            } else {
-			            $this->data_check = false;
-			            $msg = __('Invalid field values', 'customer-specific-pricing-lite');
-		            }
+
 		            //display status message
 	            }//end if empty lines
             }//end of while

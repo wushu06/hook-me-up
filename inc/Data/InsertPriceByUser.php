@@ -19,7 +19,9 @@ class InsertPriceByUser extends BaseController {
 
         //for checking headers
         // $requiredHeaders                 = array( 'Product id', 'User', 'Price' );
-        $requiredHeaders                 = array( 'Product id', 'User', 'Min Qty', 'Flat','%' );
+        $requiredHeaders                 = array( 'Internal ID', 'Item Code', 'Item Description', 'Customer Account Number','Item Pricing' );
+
+
 
         $fptr                               = fopen($csv_file, 'r');
         $firstLine                       = fgets($fptr); //get first line of csv file
@@ -47,12 +49,14 @@ class InsertPriceByUser extends BaseController {
 		            $result = $data;
 		            $str = implode(',', $result);
 		            $slice = explode(',', $str);
+
 		            $product_id = $slice[0];
-		            $user = $slice[1];
-		            $min_qty = $slice[2];
-		            $price = $slice[3];
-		            $discount_price = $slice[4];
-		            $status = null;
+		            $code = $slice[1];
+		            $desc = $slice[2];
+		            $netsuite_id = $slice[3];
+		          $price = trim(str_replace('£','',$slice[4]));
+
+
 
 		            $count = $wpdb->get_results($wpdb->prepare("SELECT * FROM $wpdb->posts WHERE custom_id = %d AND post_type = 'product'", $product_id));
 		            $stdInstance = json_decode(json_encode($count), true);
@@ -67,11 +71,11 @@ class InsertPriceByUser extends BaseController {
 		            if (floatval($price) || $price == 0.0) {
 			            //check if product exists or not
 			            if (isset($product->post) && (get_class($product) == 'WC_Product_Simple' && get_post_type($product_id) == "product")) {
-				            if (!isset($fetched_users[$user])) {
+				            if (!isset($fetched_users[$netsuite_id])) {
 					            //get user id
-					            $fetched_users[$user] = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$wdm_users} where user_login=%s", $user));
+					            $fetched_users[$netsuite_id] = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$wdm_users} where user_login=%s", $netsuite_id));
 				            }
-				            $get_user_id = $fetched_users[$user];
+				            $get_user_id = $fetched_users[$netsuite_id];
 
 				            if ($get_user_id == null) {
 					            $this->data_check = false;
@@ -81,12 +85,14 @@ class InsertPriceByUser extends BaseController {
 					            //Update price for existing one
 					            $result = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$wdm_user_product_price_mapping} where product_id=%d and user_id=%d", $product_id, $get_user_id));
 					            if ($result != null) {
+
 						            $update_price = $wpdb->update(
 							            $wdm_user_product_price_mapping,
+
 							            array(
 								            'price' => $price,
-								            'flat_or_discount_price' => $discount_price,
-								            'min_qty' => $min_qty
+								            'flat_or_discount_price' => 0,
+								            'min_qty' => 1
 							            ),
 							            array(
 								            'product_id' => $product_id,
@@ -117,15 +123,16 @@ class InsertPriceByUser extends BaseController {
 							            array(
 								            'product_id' => $product_id,
 								            'user_id' => $get_user_id,
-								            'min_qty' => $min_qty,
+								            'min_qty' =>1,
 								            'price' => $price,
-								            'flat_or_discount_price' => $discount_price,
+								            'flat_or_discount_price' => 0,
 							            ),
 							            array(
 								            '%d',
 								            '%d',
 								            '%d',
-								            '%d',
+								            '%f',
+								            '%d'
 							            )
 						            )) {
 							            $this->data_check = true;

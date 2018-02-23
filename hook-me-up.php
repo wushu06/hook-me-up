@@ -10,6 +10,11 @@ Domain Path: /languages
 License:     GPL3
 
 */
+if (version_compare(phpversion(), '7.0.0', '<')) {
+
+	return;
+}
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }

@@ -38,11 +38,18 @@ class Activate {
 
 		global $wpdb;
 	    $table = 'wp_posts';
+	    $user_table = 'wp_users';
 
 	    $custom_id = $wpdb->get_row( sprintf("SELECT * FROM %s LIMIT 1", $table) );
+	    $custom_id_users = $wpdb->get_row( sprintf("SELECT * FROM %s LIMIT 1", $user_table) );
 
 	    if(!isset($custom_id->missing_field)) {
 		    $wpdb->query( sprintf( "ALTER TABLE %s ADD custom_id INT(1) NOT NULL DEFAULT 1", $table) );
+
+
+	    }
+	    if(!isset($custom_id_users->missing_field)) {
+		    $wpdb->query( sprintf( "ALTER TABLE %s ADD custom_id VARCHAR (255)", $user_table) );
 
 
 	    }

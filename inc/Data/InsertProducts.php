@@ -17,7 +17,8 @@ class InsertProducts
         $csv_file = $file;
 
         //for checking headers
-        $requiredHeaders = array('Internal ID','Product Code','Suggested Name','Agent','Website Category','Sub-Category','Sub-brand','Description','Fire Rating','Short Description','Certification','Toolkit');
+        $requiredHeaders = array('Internal ID','Product Code','Suggested Name','Agent','Website Category','Sub-Category','Sub-brand','Description','Short Description','Fire Rating','Certification','Toolkit');
+
 
         $fptr = fopen($csv_file, 'r');
         $firstLine = fgets($fptr); //get first line of csv file
@@ -26,10 +27,12 @@ class InsertProducts
 
 
 //check the headers of file
-        /* if ($foundHeaders !== $requiredHeaders) {
+
+	    if ($foundHeaders !== $requiredHeaders) {
              echo 'File Header not the same';
              die();
-         }**/
+         }
+
         $getfile = fopen($csv_file, 'r');
 //$users     = array();
         if (false !== ($getfile = fopen($csv_file, 'r'))) {
@@ -59,11 +62,13 @@ class InsertProducts
                     $sub_brand = $slice[6];
                     $description = $slice[7];
                     $shortdesc = $slice[8];
-                    $cert = $slice[9];
+                    $rating = $slice[9];
+	                $cert = $slice[10];
+	                $tech = '• '.$rating .'<br>'. $cert;
                     //$filename = $slice[12];
 
 
-                    $reault_array [] = $this->insert_update_products($netsuite_id, $post_title,$agent, $cat,$sub_cat, $sub_brand, $description,$shortdesc);
+                    $reault_array [] = $this->insert_update_products($netsuite_id, $post_title,$agent, $cat,$sub_cat, $sub_brand, $description,$shortdesc,$tech);
 
 
 
@@ -94,7 +99,7 @@ class InsertProducts
 		return $string;
 	}
 
-    function insert_update_products($netsuite_id, $post_title,$agent, $cat,$sub_cat, $sub_brand, $description,$shortdesc)
+    function insert_update_products($netsuite_id, $post_title,$agent, $cat,$sub_cat, $sub_brand, $description,$shortdesc,$tech)
     {
         //wp_suspend_cache_addition(true);
 
@@ -113,10 +118,11 @@ class InsertProducts
                       $wpdb->posts,
                           array(
                               'post_title' => $post_title,
-                              'post_content' => $shortdesc,
+                              'post_content' => $description,
                               'post_name' => $seo,
                               'post_status' => 'publish',
                               'post_type'=>'product',
+                              'post_excerpt'=>$shortdesc,
                               'custom_id' => $netsuite_id,
                           ),
                           array(
@@ -128,6 +134,7 @@ class InsertProducts
                               '%s',
                               '%s',
                               '%s',
+	                          '%s',
                               '%s',
                               '%d'
                           )
@@ -152,10 +159,11 @@ class InsertProducts
                       $wpdb->posts,
                       array(
                           'post_title' => $post_title,
-                          'post_content' => $shortdesc,
+                          'post_content' => $description,
                           'post_name' => $seo,
                           'post_status' => 'publish',
                           'post_type'=>'product',
+	                      'post_excerpt'=>$shortdesc,
                           'custom_id' => $netsuite_id,
                       ),
                       array(
@@ -164,6 +172,7 @@ class InsertProducts
                           '%s',
                           '%s',
                           '%s',
+	                      '%s',
                           '%d'
                       )
                   );
@@ -213,7 +222,7 @@ class InsertProducts
                 wp_set_post_terms( $product_wp_id,$child_exist['term_id'],  'product_cat' );
 
             }else {
-                $parent_term = term_exists( 'fire-extinguishers', 'product_cat' ); // array is returned if taxonomy is given
+                $parent_term = term_exists( 'extinguishers', 'product_cat' ); // array is returned if taxonomy is given
                 $parent_term_id = $parent_term['term_id'];         // get numeric term id
 
                 $child_term = wp_insert_term(
@@ -261,7 +270,7 @@ class InsertProducts
 
 
 
-	    update_post_meta( $product_wp_id , '_visibility', 'visible' );
+	      update_post_meta( $product_wp_id , '_visibility', 'visible' );
           update_post_meta( $product_wp_id , '_stock_status', 'instock');
           update_post_meta( $product_wp_id , 'total_sales', '0' );
           update_post_meta( $product_wp_id , '_downloadable', 'no' );
@@ -283,7 +292,7 @@ class InsertProducts
           update_post_meta( $product_wp_id , '_manage_stock', 'no' );
           update_post_meta( $product_wp_id , '_backorders', 'no' );
           update_post_meta( $product_wp_id , '_stock', '' );
-          update_post_meta( $product_wp_id , 'tech_spec', $description );
+          update_post_meta( $product_wp_id , 'tech_spec', $tech );
 
 
 

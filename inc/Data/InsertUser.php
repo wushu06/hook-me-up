@@ -60,14 +60,14 @@ class InsertUser extends BaseController
 		            $result = $data; // two sperate arrays
 		            $str = implode(',', $result); // join the two sperate arrays
 		            $slice = explode(',', $str); // remove ,
-		            $ID = $slice[0];
+		           // $ID = $slice[0]; irrelevant
 		            $custom_id = $slice[1];
 		            $username = $slice[2];
-		            $role = $slice[3];
+		            $status = $slice[3];
 		            $phone = $slice[4];
 		            $email = $slice[5];
 		            $login_acess = $slice[6];
-		            $price_level = $slice[7];
+		            $role = strtolower(str_replace([" ", " "], '-',$slice[7]));
 		            $pricing_group = $slice[8];
 		            $cons = $slice[9];
 		            $post_code = $slice[10];
@@ -79,7 +79,7 @@ class InsertUser extends BaseController
 		            $special_note = $slice[16];
 
 
-		            $reault_array[] = $this->insert_update_user($ID, $custom_id, $username, $role, $phone, $email, $post_code, $address, $city);
+		            $reault_array[] = $this->insert_update_user( $custom_id, $username, $role, $phone, $email, $post_code, $address, $city);
 
 		            // echo $reault_array['msg'];
 		            //echo ($reault_array['check'] == true ? 'Send Email' : 'dont send email');
@@ -94,18 +94,18 @@ class InsertUser extends BaseController
 
     }
 
-    function insert_update_user($ID ,$custom_id, $username, $role, $phone,   $email,$post_code,$address,$city)
+    function insert_update_user($custom_id, $username, $role, $phone,   $email,$post_code,$address,$city)
     {
 
 
-        $this->user_data ['username'] = $username;
+        $this->user_data ['username'] = $custom_id;
         $this->user_data ['email'] = $email;
        // wp_suspend_cache_addition(true);
         $password = $this->randomPassword();
         $pass = wp_hash_password($password);
 
         $userdata = array(
-            'user_login' => $username,
+            'user_login' => $custom_id,
             'user_pass' => $pass,
             'user_email' => $email,
             'first_name' => $username,
@@ -121,12 +121,12 @@ class InsertUser extends BaseController
 
         // getting users by username
 
-        $count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $wpdb->users WHERE user_login = %s", $username));
+        $count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $wpdb->users WHERE user_email = %s", $email));
 
 
         if ($count == 1) { //
 
-            $v = get_user_by('login', $username);
+            $v = get_user_by('login', $custom_id);
             if($v){
 
                 $ID = $v->ID;
@@ -139,7 +139,7 @@ class InsertUser extends BaseController
 		            $to = $email;
 		            $subject = get_bloginfo('name').' Users Update';
 		            $headers[] = 'From: '.get_bloginfo('name').' <'.$email.'>';
-		            wp_mail($to, $subject, $message, $headers);
+		        //    wp_mail($to, $subject, $message, $headers);
 
 		            $msg = 'email was sent';
 	            }
@@ -148,12 +148,25 @@ class InsertUser extends BaseController
 
             $user_id = wp_update_user(array(
                                         'ID' => @$ID,
-                                        'user_login' => $username,
+                                        'user_login' => $custom_id,
                                         'user_email' => $email,
                                         'first_name'=>$username,
                                         'last_name'=>$username,
                                         'role'=>$role
                                         ));
+		     /*   $wpdb->update(
+			        $wpdb->users,
+			        array(
+				        'custom_id'=>$custom_id
+			        ),
+			        array(
+				        'ID' =>$ID
+			        ),
+
+			        array(
+				        '%s'
+			        )
+		        );*/
 
             if (is_wp_error($user_id)) {
                 $msg =  "There was an error, probably that user doesn't exist";
@@ -190,22 +203,35 @@ class InsertUser extends BaseController
         } else {
 
             $user_id = wp_insert_user($userdata);
+	/*        $wpdb->update(
+		        $wpdb->users,
+		        array(
+			        'custom_id'=>$custom_id
+		        ),
+		        array(
+			        'ID' =>$user_id
+		        ),
 
-            $msg =  $username . ' New User <br>';
+		        array(
+			        '%s'
+		        )
+	        );*/
+
+            $msg =  $custom_id . ' New User <br>';
 
             //On success
             if (!is_wp_error($user_id)) {
 
-                $msg = "User created : " . $username . ' ID: ' . $user_id;
+                $msg = "User created : " . $custom_id . ' ID: ' . $user_id;
 
 
-                if ($this->email->retrieve_password($username)) {
+              /*  if ($this->email->retrieve_password($custom_id)) {
                     $msg =  "Reset Password link has been sent to ".$email;
                     $check = true;
                 } else {
                     $msg = "Couldn't send reset password email to ".$email;
                     $check = false;
-                }
+                }*/
 
             } else {
 
@@ -224,7 +250,7 @@ class InsertUser extends BaseController
 
         }
 
-         return array('username'=>$username,'msg'=>$msg, 'check'=>@$check);
+         return array('username'=>$custom_id,'msg'=>$msg, 'check'=>@$check);
 
     }
 
