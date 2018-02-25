@@ -32,7 +32,7 @@ class SettingsApi
     *- 1- add menu pages (and subpages)
     *- 2- add pages functio + add subpages function + withsubpage function
     */
-    public function add_pages(array $pages)
+    public function add_pages( $pages)
     {
         $this->admin_pages = $pages;
 
@@ -40,14 +40,14 @@ class SettingsApi
 
     }
 
-    public function addSubPages(array $pages)
+    public function addSubPages($pages)
     {
         $this->admin_subpages = array_merge($this->admin_subpages, $pages);
 
         return $this;
     }
 
-    public function withSubPage(string $title = null)
+    public function withSubPage($title = null)
     {
         if (empty($this->admin_pages)) {
             return $this;
@@ -104,21 +104,21 @@ class SettingsApi
     * 2- add settings section
     * 3- add settings field
     */
-    public function setSettings(array $settings)
+    public function setSettings( $settings)
     {
         $this->settings = $settings;
 
         return $this;
     }
 
-    public function setSections(array $sections)
+    public function setSections( $sections)
     {
         $this->sections = $sections;
 
         return $this;
     }
 
-    public function setFields(array $fields)
+    public function setFields( $fields)
     {
         $this->fields = $fields;
 

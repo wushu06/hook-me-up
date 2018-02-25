@@ -18,9 +18,10 @@ class BaseController
 
     public function __construct()
     {
-        $this->plugin_path = plugin_dir_path(dirname(__FILE__, 2));
-        $this->plugin_url = plugin_dir_url(dirname(__FILE__, 2));
-        $this->plugin = plugin_basename(dirname(__FILE__, 3)) . '/hook-me-up-csv.php';
+        /*$this->plugin_path = plugin_dir_path(dirname(__FILE__, 2));
+        $this->plugin_url = plugin_dir_url(dirname(__FILE__, 2));*/
+        $this->plugin_path = SITE_ROOT.'/';
+        $this->plugin_url = plugins_url().'/hook-me-up/';
 
         $this->subpagesOutput = array(
            /* 'import_users' =>

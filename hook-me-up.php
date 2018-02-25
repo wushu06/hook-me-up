@@ -10,10 +10,7 @@ Domain Path: /languages
 License:     GPL3
 
 */
-if (version_compare(phpversion(), '7.0.0', '<')) {
 
-	return;
-}
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -45,6 +42,15 @@ register_deactivation_hook( __FILE__, 'hook_me_up_deactivate' );
 if (class_exists ('Inc\\Init')) {
 	Inc\Init::register_services();
 }
+
+
+
+
+
+
+
+
+
 add_action( 'show_user_profile', 'hmu_user_custom_field' );
 add_action( 'edit_user_profile', 'hmu_user_custom_field' );
 

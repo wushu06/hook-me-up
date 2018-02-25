@@ -53,6 +53,7 @@ jQuery(document).ready( function($){
 
 
     $(".upload-file").on('click', function(e){
+        
         e.preventDefault();
         var file_csv1 = $('#locationUpload1').prop('files')[0];
         var file_csv2 = $('#locationUpload2').prop('files')[0];
@@ -93,6 +94,7 @@ jQuery(document).ready( function($){
         form_data.append('file', file_csv);
         form_data.append('action', 'hook_me_up_upload_csv_file');
         form_data.append('security', WP_JOB_LISTING.security);
+        console.log(form_data.append('file', file_csv));
 
 
 
