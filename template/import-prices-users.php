@@ -86,7 +86,14 @@ $image = new InsertImage();
                     <button id="importTable3" class="upload-file hmu-btn"> Upload File </button>
                     <input class="hmu-input hmu-primary  hidden" type="submit" value="Insert/Update Users" name="submit_users">
                 </form>
-
+                <?php if(@get_option('hmu_dashboard')['activate_email'] == false) : ?>
+                    <a href="<?php echo get_admin_url()  ?>?page=hmu_plugin">Activate email</a>
+                    <?php else: ?>
+                 <form action="" method="post">
+                    <input class=" hmu-input hmu-success" type="submit" value="Send result to the admin's email" name="send_email">
+                    <input type="hidden" value="<?php if(isset($email_results )){ foreach ($email_results as $key=>$email_result ){echo $email_result.', ';}} ?>" name="username">
+                </form>
+                <?php endif; ?>
             </div>
 
 
@@ -119,6 +126,7 @@ $image = new InsertImage();
                     <!--                    <button id="importTable" class="upload-file hmu-btn"> Upload File </button>
                     -->                    <input class="hmu-input hmu-primary " type="submit" value="Insert/Update Images" name="submit_images">
                 </form>
+
 
             </div>
 
@@ -210,6 +218,10 @@ $image = new InsertImage();
 
         }
 
+        if (isset($_POST["send_email"] ) ) {
+            echo $email->hmu_send_admin_email();
+        }
+
 
 
 
@@ -271,20 +283,24 @@ $image = new InsertImage();
         ?>
     </div>
 
-    <form action="" method="post">
-        <input class=" hmu-input hmu-success" type="submit" value="Send result to the admin's email" name="send_email">
-        <input type="hidden" value="<?php if(isset($email_results )){ foreach ($email_results as $key=>$email_result ){echo $email_result.', ';}} ?>" name="username">
-    </form>
+
 
 <?php
+
+
+
+
+
+
+
+
+
+
+
+
+
 global $wpdb;
 
-$custom_id = 'dsx';
-$userdata = array(
-	'user_login' => 'testnew',
-	'user_pass' => '12345',
-	'user_email' => 'nour@g.com',
-);
 
 
 
@@ -414,8 +430,17 @@ function attach_image_l ($product_wp_id, $filename)
 
 
     if(file_exists($uploadfile)){
+        $wp_filetype = wp_check_filetype(basename($uploadfile), null );
+        $attachment = array(
+            'post_mime_type' => $wp_filetype['type'],
+            'post_title' => $uploadfile,
+            'post_content' => '',
+            'post_status' => 'inherit'
+        );
+        $attach_id = wp_insert_attachment( $attachment, $uploadfile );
 
-        $attach_id = attachment_url_to_postid($uploadfile);
+        //$attach_id = attachment_url_to_postid($uploadfile);
+       return $attach_id;
 
 
 

@@ -31,7 +31,7 @@ class InsertLocations
 		//check the headers of file
 		if ($foundHeaders !== $requiredHeaders) {?>
             <div class="notice notice-warning is-dismissible">
-                <p>File Header not the same</p>
+                <p>File header is not the same</p>
             </div>
 
 		<?php

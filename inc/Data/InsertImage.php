@@ -232,11 +232,11 @@ class InsertImage
 		$uploadfile = $uploaddir['path'] . '/'. $bname ;
 		$uploadfile_from = $uploaddir['basedir'].'/products_images'. '/'. $bname ;
 
-		/*if(file_exists($uploadfile)){
-			$id = attachment_url_to_postid($uploadfile);
-			echo 'file exist';
-			die();
-		} else {*/
+		if(file_exists($uploadfile)){
+            $attach_id = attachment_url_to_postid($uploadfile);
+            echo 'File exists';
+
+		} else {
 			$contents= file_get_contents($filename);
 			$savefile = fopen($uploadfile, 'w');
 			fwrite($savefile, $contents);
@@ -256,7 +256,7 @@ class InsertImage
 			$attach_data = wp_generate_attachment_metadata( $attach_id, $fullsizepath );
 			wp_update_attachment_metadata( $attach_id, $attach_data );
 
-		//}
+		}
 
 		return $attach_id;
 

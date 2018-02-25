@@ -21,8 +21,8 @@
     submit_button( 'Create task', 'hmu-btn hmu-primary', 'btnSubmit' );
     ?>
 <?php
-
-    if($option  = get_option ('hmu_cron') != NULL ):
+    $option  = get_option ('hmu_cron');
+    if( $option ):
   /*  if( $option['error'] ){
         echo 'File couldnt be moved';
         exit();

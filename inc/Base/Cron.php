@@ -13,10 +13,10 @@ class Cron
 
     public function register()
     {
+        $option  = get_option ('hmu_cron');
+        if($option )
 
-        if(@$this->option  = get_option ('hmu_cron') != NULL )
-
-        foreach (@$this->option  as $key => $value) {
+        foreach ($option  as $key => $value) {
 
             @$cron_time  =  $value['cron_time'] ;
             $cron_name_row = $value['cron_name'];

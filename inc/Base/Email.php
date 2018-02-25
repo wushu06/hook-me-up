@@ -9,7 +9,10 @@ class Email
 
     public function hmu_send_admin_email() {
 
-        $message = 'New users have been added or updated: '.$_POST['username'];
+        $message = '<h1>Import Result</h1>';
+        $message .= '<p>List of new/updated users:<br/>';
+        $message .=  $_POST['username'].' <br>';
+
         $to = get_bloginfo('admin_email');
         $subject = get_bloginfo('name').' Users Update';
         $headers[] = 'From: '.get_bloginfo('name').' <'.$to.'>';
@@ -85,17 +88,37 @@ class Email
     }
 
 
-	public function send_update_email($user_email, $role)
+	public function welcome_email($username, $user_email)
 	{
-	    $message = 'You have been assigned new Role: '.$role;
+	    $message = '<h1>Dear '.$username.'</h1>';
+	    $message .= '<p>We wish you a very warm welcome to CheckFire and very much look forward to working with you.<br/>';
+	    $message .= 'Your online account is currently being set up, you will receive an email shortly with further instruction on how to access your account.</p>';
+	    $message .= '<p>Thanks</p><p><strong>CheckFire Team</strong></p>';
+
         $to = $user_email;
-        $subject = get_bloginfo('name').' Users Update';
-        $headers[] = 'From: '.get_bloginfo('name').' <'.$user_email.'>';
+        $subject = get_bloginfo('name').' Welcome!';
+        $headers = array('Content-Type: text/html; charset=UTF-8');
         wp_mail($to, $subject, $message, $headers);
 
         return $msg = 'email was sent';
 
 	}
+
+    public function followUp_email($username, $user_email)
+    {
+        $message = '<h1>Dear '.$username.'</h1>';
+        $message .= '<p>We’re pleased to confirm that your online account is now set up.<br/>';
+        $message .= 'Please log In using you username and password in order to access your account.<br/>Don’t forget, our online live chat support is available Monday to Friday 9am – 4pm should you need any help.</p>';
+        $message .= '<p>Thanks</p><p><strong>CheckFire Team</strong></p>';
+
+        $to = $user_email;
+        $subject = get_bloginfo('name').' online account';
+        $headers = array('Content-Type: text/html; charset=UTF-8');
+        wp_mail($to, $subject, $message, $headers);
+
+        return $msg = 'email was sent';
+
+    }
 
 
 }

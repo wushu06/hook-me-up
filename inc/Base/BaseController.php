@@ -23,8 +23,8 @@ class BaseController
         $this->plugin = plugin_basename(dirname(__FILE__, 3)) . '/hook-me-up-csv.php';
 
         $this->subpagesOutput = array(
-            'import_users' =>
-                array('Import Users', 'hmu_users_page'),
+           /* 'import_users' =>
+                array('Import Users', 'hmu_users_page'),*/
             'import_prices' =>
                 array('Import Prices & Users', 'hmu_prices_page'),
             'cron_task' =>
